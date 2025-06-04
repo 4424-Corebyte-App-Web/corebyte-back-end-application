@@ -17,26 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="alerts\Application\Infernal\CommandServices\" />
-    <Folder Include="alerts\Application\Infernal\QueryServices\" />
-    <Folder Include="alerts\authentication\Application\Infernal\CommandServices\" />
-    <Folder Include="alerts\authentication\Application\Infernal\QueryServices\" />
-    <Folder Include="alerts\authentication\Domain\Model\Aggregates\" />
-    <Folder Include="alerts\authentication\Domain\Model\Commands\" />
-    <Folder Include="alerts\authentication\Domain\Model\Queries\" />
-    <Folder Include="alerts\authentication\Domain\Repositories\" />
-    <Folder Include="alerts\authentication\Domain\Services\" />
-    <Folder Include="alerts\authentication\Infrastucture\Repositories\" />
-    <Folder Include="alerts\authentication\Interfaces\REST\Resources\" />
-    <Folder Include="alerts\authentication\Interfaces\REST\Transform\" />
-    <Folder Include="alerts\Domain\Model\Aggregates\" />
-    <Folder Include="alerts\Domain\Model\Commands\" />
-    <Folder Include="alerts\Domain\Model\Queries\" />
-    <Folder Include="alerts\Domain\Repositories\" />
-    <Folder Include="alerts\Domain\Services\" />
-    <Folder Include="alerts\Infrastucture\Repositories\" />
-    <Folder Include="alerts\Interfaces\REST\Resources\" />
-    <Folder Include="alerts\Interfaces\REST\Transform\" />
     <Folder Include="orders\Application\Infernal\CommandServices\" />
     <Folder Include="orders\Application\Infernal\QueryServices\" />
     <Folder Include="orders\authentication\Application\Infernal\CommandServices\" />
@@ -168,8 +148,6 @@
     <Folder Include="authentication\Interfaces\REST\Transform\" />
     <Folder Include="authentication\Interfaces\REST\Resources\" />
     <Folder Include="a\" />
-    <Folder Include="Shared\EFC\Configuration\Extensions\" />
-    <Folder Include="Shared\EFC\Repositories\" />
   </ItemGroup>
 
 </Project>
