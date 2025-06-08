@@ -1,6 +1,6 @@
 using Humanizer;
 
-namespace CatchUp.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions
+namespace Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions
 {
     public static class StringExtensions
     {
