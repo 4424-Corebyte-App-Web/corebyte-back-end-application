@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace CatchUp.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions
+namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions
 {
     public static class ModelBuilderExtensions
     {/// <summary>
