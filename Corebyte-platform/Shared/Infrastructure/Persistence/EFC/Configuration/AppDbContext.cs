@@ -1,15 +1,16 @@
 using EntityFrameworkCore;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
-using CatchUp.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions;
-using CatchUp.News.Domain.Model.Aggregates;
+using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions;
+//using CatchUp.News.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
-namespace CatchUp.Shared.Infrastucture.Persistence.EFC.Configuration
+namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
 {
     public class AppDbContext(DbContextOptions options) : DbContext(options)
     {
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
-        {   builder.AddCreatedUpdatedInterceptor();
+        {
+            builder.AddCreatedUpdatedInterceptor();
             base.OnConfiguring(builder);
         }
 
@@ -17,7 +18,6 @@ namespace CatchUp.Shared.Infrastucture.Persistence.EFC.Configuration
         {
             base.OnModelCreating(builder);
 
-            //cambiar con la su propia entidad
             //builder.Entity<FavoriteSource>().HasKey(f => f.Id);
             //builder.Entity<FavoriteSource>().Property(f => f.Id).IsRequired().ValueGeneratedOnAdd();
             //builder.Entity<FavoriteSource>().Property(f => f.SourceId).IsRequired();
