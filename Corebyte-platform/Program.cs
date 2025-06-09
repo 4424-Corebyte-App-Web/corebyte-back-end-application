@@ -31,13 +31,11 @@ if (connectionString is null)
 }
 
 // Configure Database Context and Logging Levels
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
-
 if (builder.Environment.IsDevelopment())
     builder.Services.AddDbContext<AppDbContext>(
         options =>
         {
-            options.UseMySql(connectionString, serverVersion)
+            options.UseMySQL(connectionString)
                 .LogTo(Console.WriteLine, LogLevel.Information)
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors();
@@ -46,7 +44,7 @@ else if (builder.Environment.IsProduction())
     builder.Services.AddDbContext<AppDbContext>(
         options =>
         {
-            options.UseMySql(connectionString, serverVersion)
+            options.UseMySQL(connectionString)
                 .LogTo(Console.WriteLine, LogLevel.Error)
                 .EnableDetailedErrors();
         });
