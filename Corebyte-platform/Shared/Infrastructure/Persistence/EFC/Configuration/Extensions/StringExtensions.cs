@@ -1,4 +1,4 @@
-using Humanizer;
+﻿using Humanizer;
 
 namespace Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions
 {

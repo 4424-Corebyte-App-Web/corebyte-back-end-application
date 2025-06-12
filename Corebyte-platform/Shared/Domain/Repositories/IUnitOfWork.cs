@@ -1,4 +1,4 @@
-namespace Corebyte_platform.Shared.Domain.Repositories
+﻿namespace Corebyte_platform.Shared.Domain.Repositories
 {
     /// <summary>
     ///     Unit of work interface
