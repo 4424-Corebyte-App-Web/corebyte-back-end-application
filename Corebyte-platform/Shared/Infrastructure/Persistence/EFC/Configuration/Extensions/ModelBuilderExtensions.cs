@@ -1,3 +1,4 @@
+﻿using Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions

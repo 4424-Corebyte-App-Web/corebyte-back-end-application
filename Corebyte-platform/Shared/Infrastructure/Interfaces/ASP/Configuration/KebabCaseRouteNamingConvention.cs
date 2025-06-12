@@ -1,4 +1,4 @@
-using Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
+﻿using Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration
