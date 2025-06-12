@@ -55,10 +55,14 @@ else if (builder.Environment.IsProduction())
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-// News Bounded Context Injection Configuration
+// Report and Records Bounded Context Injection Configuration
 builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
 builder.Services.AddScoped<IHistoryCommandService, HistoryCommandService>();
 builder.Services.AddScoped<IHistoryQueryService, HistoryQueryService>();
+
+builder.Services.AddScoped<IRecordRepository, RecordRepository>();
+builder.Services.AddScoped<IRecordCommandService, RecordCommandService>();
+builder.Services.AddScoped<IRecordQueryService, RecordQueryService>();
 
 var app= builder.Build();
 
