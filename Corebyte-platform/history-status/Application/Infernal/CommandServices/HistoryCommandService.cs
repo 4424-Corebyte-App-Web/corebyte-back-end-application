@@ -19,18 +19,13 @@ namespace Corebyte_platform.history_status.Application.Infernal.CommandServices
         /// </summary>
         /// <param name="command">The DeleteHistoriesByIdCommand command</param>
         /// <returns>The number of histories deleted</returns>
-        public async Task<History> Handle(DeleteHistoriesByIdCommand command)
+        public async Task<int> Handle(DeleteHistoriesByIdCommand command)
         {
-            var history = await historyRepository.FindByIdAsync(command.id);
-            if (history == null)
-            {
-                return null;
-            }
+            var deletedCount = await historyRepository.DeleteByIdAsync(command.id);
 
-            await historyRepository.DeleteByIdAsync(command.id);
             await unitOfWork.CompleteAsync();
             
-            return history;
+            return deletedCount;
         }
         /// <summary>
         ///     Updates a history by its ID.
