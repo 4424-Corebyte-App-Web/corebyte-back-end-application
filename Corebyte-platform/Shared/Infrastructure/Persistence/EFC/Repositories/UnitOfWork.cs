@@ -5,6 +5,7 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Repositories
 {
     public class UnitOfWork(AppDbContext context) : IUnitOfWork
     {
+        
         public async Task CompleteAsync()
         {
             await context.SaveChangesAsync();

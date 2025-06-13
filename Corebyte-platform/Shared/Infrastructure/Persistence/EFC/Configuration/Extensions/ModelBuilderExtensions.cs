@@ -21,6 +21,7 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.E
                 foreach (var property in entity.GetProperties())
                     property.SetColumnName(property.GetColumnName().ToSnakeCase());
 
+                
                 foreach (var key in entity.GetKeys())
                 {
                     var keyName = key.GetName();

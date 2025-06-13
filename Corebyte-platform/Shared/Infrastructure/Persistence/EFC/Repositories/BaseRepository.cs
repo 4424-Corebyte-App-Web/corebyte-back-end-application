@@ -18,7 +18,6 @@ namespace Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Repositories
         {
             await Context.Set<TEntity>().AddAsync(entity);
         }
-
         /// <inheritdoc />
         public async Task<TEntity?> FindByIdAsync(int id)
         {

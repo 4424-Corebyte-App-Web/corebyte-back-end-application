@@ -15,7 +15,6 @@ namespace Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration.E
                    .Trim()
                    .ToLower();
         }
-
         [GeneratedRegex("(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])", RegexOptions.Compiled)]
         private static partial Regex KebabCaseRegex();
     }

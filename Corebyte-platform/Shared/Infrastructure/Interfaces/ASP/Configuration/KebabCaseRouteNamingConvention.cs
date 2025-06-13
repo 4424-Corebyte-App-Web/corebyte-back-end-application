@@ -5,6 +5,7 @@ namespace Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration
 {
     public class KebabCaseRouteNamingConvention : IControllerModelConvention
     {
+        
         private static AttributeRouteModel? ReplaceControllerTemplate(SelectorModel selector, string name)
         {
             return selector.AttributeRouteModel != null ? new AttributeRouteModel

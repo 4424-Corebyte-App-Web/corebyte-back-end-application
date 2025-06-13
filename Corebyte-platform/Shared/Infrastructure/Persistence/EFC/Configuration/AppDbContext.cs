@@ -23,7 +23,6 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
             //Configuration of the entity History
             builder.Entity<History>().HasKey(h => h.Id);
             builder.Entity<History>().Property(h => h.Id).IsRequired().ValueGeneratedOnAdd();

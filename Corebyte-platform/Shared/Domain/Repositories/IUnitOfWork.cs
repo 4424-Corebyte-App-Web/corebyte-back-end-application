@@ -8,6 +8,7 @@
     /// </remarks>
     public interface IUnitOfWork
     {
+        
         /// <summary>
         ///     Commit changes to the database
         /// </summary>

@@ -32,6 +32,7 @@ namespace Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Configuration.
             }
         }
 
+        
         /// <summary>
         ///     Pluralize a string
         /// </summary>
