@@ -114,7 +114,6 @@ namespace Corebyte_platform.history_status.Infrastucture.Repositories
 
             Context.Set<History>().RemoveRange(histories);
             await Context.SaveChangesAsync();
-            
             return histories.Count;
         }
     }

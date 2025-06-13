@@ -49,6 +49,7 @@ namespace Corebyte_platform.history_status.Application.Infernal.QueryServices
             var record = await recordRepository.findByStockAsync(query.stock);
             return record != null ? new List<Record> { record } : Enumerable.Empty<Record>();
         }
+        
         /// <summary>
         ///     Gets records by type and product.
         /// </summary>

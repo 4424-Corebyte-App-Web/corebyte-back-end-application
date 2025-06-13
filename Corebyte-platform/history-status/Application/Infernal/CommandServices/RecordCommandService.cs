@@ -18,12 +18,15 @@ namespace Corebyte_platform.history_status.Application.Infernal.CommandServices
         /// </summary>
         /// <param name="command">The DeleteRecordByIdCommand command</param>
         /// <returns>The number of records deleted</returns>
-        public async Task<int> Handle(DeleteRecordByIdCommand command)
+        public async Task<Record> Handle(DeleteRecordByIdCommand command)
         {
-            var deletedCount = await recordRepository.DeleteRecordByIdAsync(command.Id);
+            var record=await recordRepository.FindByIdAsync(command.Id);
+            if (record == null) {
+                return null;
+            }
+            await recordRepository.DeleteRecordByIdAsync(command.Id);
             await unitOfWork.CompleteAsync();
-            
-            return deletedCount;
+            return record;
         }
         /// <summary>
         ///     Updates a record by its ID.

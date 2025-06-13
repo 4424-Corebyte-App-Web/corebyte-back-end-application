@@ -110,23 +110,28 @@ namespace Corebyte_platform.history_status.Interfaces
         /// <returns>Number of records deleted</returns>
         [HttpDelete("{id}")]
         [SwaggerOperation(
-            Summary = "Deletes all history records for a id",
-            Description = "Deletes all history records associated with the specified id",
+            Summary = "Deletes history for a id",
+            Description = "Deletes history associated with the specified id",
             OperationId = "DeleteHistoriesById")]
-        [SwaggerResponse(200, "History records were successfully deleted", typeof(ActionResult<int>))]
+        [SwaggerResponse(200, "History was successfully deleted", typeof(HistoryResource))]
         [SwaggerResponse(404, "No history records found for the id")]
-        public async Task<IActionResult> DeleteHistoriesByCustomer(int id)
+        public async Task<IActionResult> DeleteHistories([FromBody] DeleteHistoryResource resource)
         {
-            var command = new DeleteHistoriesByIdCommand(id);
-            var deletedCount = await historyCommandService.Handle(command);
-            
-            if (deletedCount == 0)
-                return NotFound(new { message = $"No history records found for id: {id}" });
-                
-            return Ok(new { 
-                message = $"Successfully deleted {deletedCount} history record(s) for id: {id}",
-                deletedCount 
-            });
+            var deleteHistoryCommand = DeleteHistoryCommandFromResourceAssembler.ToCommandFromResource(resource);
+            try
+            {
+                var history= await historyCommandService.Handle(deleteHistoryCommand);
+                if (history is null)
+                {
+                    return NotFound(new { message = "No history records found for the specified id" });
+                }
+                var historyResource=HistoryResourceFromEntityAssembler.ToResourceFromEntity(history);
+                return Ok(historyResource);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "An error occurred while deleting the history" });
+            }
         }
 
         /// <summary>
@@ -137,43 +142,23 @@ namespace Corebyte_platform.history_status.Interfaces
         /// <returns>The updated history record</returns>
         [HttpPut("{id}")]
         [SwaggerOperation(
-            Summary = "Updates a history record by ID",
-            Description = "Updates an existing history record with the provided data",
+            Summary = "Updates an existing history record by ID",
+            Description = "Updates an existing history record with the specified ID",
             OperationId = "UpdateHistoryById")]
         [SwaggerResponse(200, "History record was updated successfully", typeof(HistoryResource))]
         [SwaggerResponse(400, "Invalid input data")]
-        [SwaggerResponse(404, "History record not found")]
+        [SwaggerResponse(404, "No history records found for the id")]
         [SwaggerResponse(409, "A history record with the same customer, product and date already exists")]
         public async Task<IActionResult> UpdateHistory(int id, [FromBody] UpdateHistoryResource resource)
         {
-            try
+            var updateHistoryCommand = UpdateHistoryCommandFromResourceAssembler.ToCommandFromResource(id, resource);
+            var history = await historyCommandService.Handle(updateHistoryCommand);
+            if (history is null)
             {
-                var command = new UpdateHistoryCommand(
-                    id,
-                    resource.Customer,
-                    resource.Date,
-                    resource.Product,
-                    resource.Amount,
-                    resource.Total,
-                    resource.Status);
-
-                var result = await historyCommandService.Handle(command);
-                var resultResource = HistoryResourceFromEntityAssembler.ToResourceFromEntity(result);
-                
-                return Ok(resultResource);
+                return NotFound(new { message = "The history record was not found" });
             }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (DuplicateHistoryException ex)
-            {
-                return Conflict(new { message = ex.Message });
-            }
-            catch (Exception)
-            {
-                return BadRequest("The history was not updated");
-            }
+            var historyResource = HistoryResourceFromEntityAssembler.ToResourceFromEntity(history);
+            return Ok(historyResource);
         }
         /// <summary>
         /// Gets a history by id. 

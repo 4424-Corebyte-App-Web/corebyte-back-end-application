@@ -4,6 +4,7 @@ using Corebyte_platform.history_status.Domain.Model.ValueObjects;
 
 namespace Corebyte_platform.history_status.Domain.Model.Aggregates
 {
+    
     /// <summary>
     ///     The Record aggregate.
     /// </summary>

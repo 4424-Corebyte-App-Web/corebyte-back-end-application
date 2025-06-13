@@ -72,5 +72,6 @@ namespace Corebyte_platform.history_status.Application.Infernal.QueryServices
             var history = await historyRepository.FindByIdAsync(query.Id);
             return history != null ? new List<History> { history } : Enumerable.Empty<History>();
         }
+        
     }
 }

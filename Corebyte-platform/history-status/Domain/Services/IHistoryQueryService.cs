@@ -11,7 +11,6 @@ namespace Corebyte_platform.history_status.Domain.Services
         /// <returns>An IEnumerable containing all History objects</returns>
         Task<IEnumerable<History>> Handle(GetAllHistoriesQuery query);
 
-
         Task<IEnumerable<History>> Handle(GetHistoryByIdQuery query);
         /// <summary>
         ///     Handle the GetHistoryByCustomerQuery.

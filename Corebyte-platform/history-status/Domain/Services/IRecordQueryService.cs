@@ -5,6 +5,7 @@ namespace Corebyte_platform.history_status.Domain.Services
 {
     public interface IRecordQueryService
     {
+        
         /// <summary>
         /// Handle the GetAllRecodQuery.
         /// </summary>

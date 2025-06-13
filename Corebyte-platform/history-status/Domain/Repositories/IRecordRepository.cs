@@ -7,6 +7,7 @@ namespace Corebyte_platform.history_status.Domain.Repositories
 {
     public interface IRecordRepository: IBaseRepository<Record>
     {
+        
         /// <summary>
         /// Finds all history records for a specific customerId
         /// </summary>

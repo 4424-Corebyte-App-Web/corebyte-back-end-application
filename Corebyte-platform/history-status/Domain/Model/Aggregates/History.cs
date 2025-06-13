@@ -7,6 +7,7 @@ namespace Corebyte_platform.history_status.Domain.Model.Aggregates
     /// </summary>
     public class History
     {
+        
         /// <summary>
         ///     The Id of the history.
         /// </summary>

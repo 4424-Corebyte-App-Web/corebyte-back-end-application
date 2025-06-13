@@ -11,5 +11,5 @@ namespace Corebyte_platform.history_status.Interfaces.REST.Resources
     /// <param name="Stock">Stock quantity</param>
     public record UpdateRecordResource(
         int CustomerId, string Type, DateTime Year, string Product, int Batch, int Stock
-        );
+    );
 }

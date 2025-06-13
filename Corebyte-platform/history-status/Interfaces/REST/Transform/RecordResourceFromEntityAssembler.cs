@@ -28,7 +28,7 @@ namespace Corebyte_platform.history_status.Interfaces.REST.Transform
         /// <param name="records">The collection of Record entities</param>
         /// <returns>A collection of RecordResource objects</returns>
         internal static IEnumerable<RecordResource>ToResourceFromEntity(IEnumerable<Record>records)=>
-                        records.Select(record => new RecordResource(
+            records.Select(record => new RecordResource(
                 record.Id, 
                 record.customer_id, 
                 record.type, 

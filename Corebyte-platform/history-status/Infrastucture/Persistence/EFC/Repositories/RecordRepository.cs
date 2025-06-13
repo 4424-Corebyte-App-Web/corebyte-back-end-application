@@ -94,5 +94,6 @@ namespace Corebyte_platform.history_status.Infrastucture.Persistence.EFC.Reposit
             Context.Entry(record).State = EntityState.Modified;
             await Context.SaveChangesAsync();
         }
+        
     }
 }
