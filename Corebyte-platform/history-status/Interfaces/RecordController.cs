@@ -108,29 +108,23 @@ namespace Corebyte_platform.history_status.Interfaces
         /// </returns>
         [HttpDelete("{id}")]
         [SwaggerOperation(
-            Summary = "Deletes a record by ID",
-            Description = "Deletes the record with the specified ID",
-            OperationId = "DeleteRecordById")]
-        [SwaggerResponse(200, "Record was successfully deleted", typeof(RecordResource))]
-        [SwaggerResponse(404, "No record found for the id")]
-        public async Task<IActionResult> DeleteRecordById([FromRoute] DeleteRecordResource resource)
+            Summary = "Deletes all records for a id",
+            Description = "Deletes all records associated with the specified id",
+            OperationId = "DeleteRecordsById")]
+        [SwaggerResponse(200, "Records were successfully deleted", typeof(ActionResult<int>))]
+        [SwaggerResponse(404, "No records found for the id")]
+        public async Task<IActionResult> DeleteRecordsById(int id)
         {
-            var deleteCommand = DeleteRecordCommandFromResourceAssembler.ToCommandFromResources(resource);
-            try
-            {
-                var record = await recordCommandService.Handle(deleteCommand);
-                if (record is null)
-                {
-                    return NotFound(new { message = "No record found with the specified ID" });
-                }
-        
-                var recordResource = RecordResourceFromEntityAssembler.ToResourceFromEntity(record);
-                return Ok(recordResource);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { message = "An error occurred while deleting the record" });
-            }
+            var command = new DeleteRecordByIdCommand(id);
+            var deletedCount = await recordCommandService.Handle(command);
+            
+            if (deletedCount == 0)
+                return NotFound(new { message = $"No records found for id: {id}" });
+                
+            return Ok(new { 
+                message = $"Successfully deleted {deletedCount} record(s) for id: {id}",
+                deletedCount 
+            });
         }
         /// <summary>
         /// Updates a record by ID.
@@ -149,31 +143,36 @@ namespace Corebyte_platform.history_status.Interfaces
         [SwaggerResponse(400, "Invalid input data")]
         [SwaggerResponse(404, "Record not found")]
         [SwaggerResponse(409, "A record with the same customerId, type, year, product and batch already exists")]
-        public async Task<IActionResult> UpdateRecord( int id,[FromBody] UpdateRecordResource resource)
+        public async Task<IActionResult> UpdateRecord(int id, [FromBody] UpdateRecordResource resource)
         {
-            var updateRecordCommand = UpdateRecordCommandFromResourceAssembler.ToCommandFromResource(id,resource);
             try
             {
-                var record = await recordCommandService.Handle(updateRecordCommand);
-                if (record is null)
-                {
-                    return NotFound(new { message = "No record found with the specified ID" });
-                }
-                var recordResource = RecordResourceFromEntityAssembler.ToResourceFromEntity(record);
-                return Ok(recordResource);
+                var customerId = new CustomerId(resource.CustomerId);
+                var command = new UpdateRecordCommand(
+                    id,
+                    customerId,
+                    resource.Type,
+                    resource.Year,
+                    resource.Product,
+                    resource.Batch,
+                    resource.Stock);
+
+                var result = await recordCommandService.Handle(command);
+                var resultResource = RecordResourceFromEntityAssembler.ToResourceFromEntity(result);
+                
+                return Ok(resultResource);
             }
-            catch (Exception)
+            catch (KeyNotFoundException ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating the record" });
+                return NotFound(new { message = ex.Message });
+            }
+            catch (DuplicateRecordException ex) { 
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception) {
+                return BadRequest("The record was not updated");
             }
         }
-        /// <summary>
-        /// Gets a record by id.
-        /// </summary>
-        /// <param name="id">The id of the record to get</param>
-        /// <returns>
-        /// A response as an action result containing the record, or not found if no record was found for the id.
-        /// </returns>
         /// <summary>
         /// Gets a record by id.
         /// </summary>
