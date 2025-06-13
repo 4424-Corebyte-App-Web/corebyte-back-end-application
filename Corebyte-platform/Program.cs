@@ -78,7 +78,6 @@ builder.Services.AddScoped<IRecordQueryService, RecordQueryService>();
 
 var app= builder.Build();
 
-
 // Verify Database Objects are created
 using (var scope = app.Services.CreateScope())
 {
