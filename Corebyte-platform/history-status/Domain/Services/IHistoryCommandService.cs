@@ -26,7 +26,7 @@ namespace Corebyte_platform.history_status.Domain.Services
         /// </remarks>
         /// <param name="command">The delete command containing the id identifier</param>
         /// <returns>The number of records deleted</returns>
-        Task<int> Handle(DeleteHistoriesByIdCommand command);
+        Task<History> Handle(DeleteHistoriesByIdCommand command);
 
         /// <summary>
         ///     Handle the update history command.
