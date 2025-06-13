@@ -2,6 +2,7 @@ using Corebyte_platform.history_status.Application.Infernal.CommandServices;
 using Corebyte_platform.history_status.Application.Infernal.QueryServices;
 using Corebyte_platform.history_status.Domain.Repositories;
 using Corebyte_platform.history_status.Domain.Services;
+using Corebyte_platform.history_status.Infrastucture.Persistence.EFC.Repositories;
 using Corebyte_platform.history_status.Infrastucture.Repositories;
 using Corebyte_platform.Shared.Domain.Repositories;
 using Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration;
@@ -54,10 +55,31 @@ else if (builder.Environment.IsProduction())
 // Shared Bounded Context Injection Configuration
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// Register DbContext for repositories
+builder.Services.AddScoped<AppDbContext>();
 
-// News Bounded Context Injection Configuration
+// History Status Bounded Context Injection Configuration
+builder.Services.AddScoped<IRecordRepository, RecordRepository>();
+
+// Explicitly register RecordCommandService with its dependencies
+builder.Services.AddScoped<IRecordCommandService>(provider => 
+    new RecordCommandService(
+        provider.GetRequiredService<IRecordRepository>(),
+        provider.GetRequiredService<IUnitOfWork>()
+    )
+);
+
+// Register RecordQueryService
+builder.Services.AddScoped<IRecordQueryService, RecordQueryService>();
+
+// History Bounded Context Injection Configuration
 builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
-builder.Services.AddScoped<IHistoryCommandService, HistoryCommandService>();
+builder.Services.AddScoped<IHistoryCommandService>(provider => 
+    new HistoryCommandService(
+        provider.GetRequiredService<IHistoryRepository>(),
+        provider.GetRequiredService<IUnitOfWork>()
+    )
+);
 builder.Services.AddScoped<IHistoryQueryService, HistoryQueryService>();
 
 var app= builder.Build();
