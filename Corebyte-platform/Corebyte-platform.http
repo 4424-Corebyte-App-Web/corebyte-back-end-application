@@ -1,0 +1,6 @@
+@Corebyte_platform_HostAddress = http://localhost:5283
+
+GET {{Corebyte_platform_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
