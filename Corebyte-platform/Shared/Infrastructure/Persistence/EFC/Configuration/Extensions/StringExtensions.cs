@@ -1,4 +1,4 @@
-using Humanizer;
+﻿using Humanizer;
 
 namespace Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions
 {
@@ -32,6 +32,7 @@ namespace Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Configuration.
             }
         }
 
+        
         /// <summary>
         ///     Pluralize a string
         /// </summary>

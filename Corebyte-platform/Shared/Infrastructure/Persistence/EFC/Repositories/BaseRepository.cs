@@ -1,4 +1,4 @@
-using Corebyte_platform.Shared.Domain.Repositories;
+﻿using Corebyte_platform.Shared.Domain.Repositories;
 using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +18,6 @@ namespace Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Repositories
         {
             await Context.Set<TEntity>().AddAsync(entity);
         }
-
         /// <inheritdoc />
         public async Task<TEntity?> FindByIdAsync(int id)
         {
