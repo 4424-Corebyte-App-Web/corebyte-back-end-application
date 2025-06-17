@@ -1,0 +1,159 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Corebyte_platform</RootNamespace>
+  </PropertyGroup>
+
+<ItemGroup>
+  <PackageReference Include="EntityFrameworkCore.CreatedUpdatedDate" Version="8.0.0" />
+  <PackageReference Include="Humanizer" Version="2.14.1" />
+  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
+  <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.5" />
+  <PackageReference Include="Microsoft.EntityFrameworkCore.Relational.Design" Version="1.1.6" />
+  <PackageReference Include="MySql.EntityFrameworkCore" Version="9.0.3" />
+  <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4" />
+  <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.1.4" />
+  <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.4" />
+  <PackageReference Include="System.Threading" Version="4.3.0" />
+  <PackageReference Include="MediatR" Version="10.0.1" />
+  <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+</ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="orders\Application\Infernal\CommandServices\" />
+    <Folder Include="orders\Application\Infernal\QueryServices\" />
+    <Folder Include="orders\authentication\Application\Infernal\CommandServices\" />
+    <Folder Include="orders\authentication\Application\Infernal\QueryServices\" />
+    <Folder Include="orders\authentication\Domain\Model\Aggregates\" />
+    <Folder Include="orders\authentication\Domain\Model\Commands\" />
+    <Folder Include="orders\authentication\Domain\Model\Queries\" />
+    <Folder Include="orders\authentication\Domain\Repositories\" />
+    <Folder Include="orders\authentication\Domain\Services\" />
+    <Folder Include="orders\authentication\Infrastucture\Repositories\" />
+    <Folder Include="orders\authentication\Interfaces\REST\Resources\" />
+    <Folder Include="orders\authentication\Interfaces\REST\Transform\" />
+    <Folder Include="orders\Domain\Model\Aggregates\" />
+    <Folder Include="orders\Domain\Model\Commands\" />
+    <Folder Include="orders\Domain\Model\Queries\" />
+    <Folder Include="orders\Domain\Repositories\" />
+    <Folder Include="orders\Domain\Services\" />
+    <Folder Include="orders\Infrastucture\Repositories\" />
+    <Folder Include="orders\Interfaces\REST\Resources\" />
+    <Folder Include="orders\Interfaces\REST\Transform\" />
+    <Folder Include="sales-analysis\Application\Infernal\CommandServices\" />
+    <Folder Include="sales-analysis\Application\Infernal\QueryServices\" />
+    <Folder Include="sales-analysis\authentication\Application\Infernal\CommandServices\" />
+    <Folder Include="sales-analysis\authentication\Application\Infernal\QueryServices\" />
+    <Folder Include="sales-analysis\authentication\Domain\Model\Aggregates\" />
+    <Folder Include="sales-analysis\authentication\Domain\Model\Commands\" />
+    <Folder Include="sales-analysis\authentication\Domain\Model\Queries\" />
+    <Folder Include="sales-analysis\authentication\Domain\Repositories\" />
+    <Folder Include="sales-analysis\authentication\Domain\Services\" />
+    <Folder Include="sales-analysis\authentication\Infrastucture\Repositories\" />
+    <Folder Include="sales-analysis\authentication\Interfaces\REST\Resources\" />
+    <Folder Include="sales-analysis\authentication\Interfaces\REST\Transform\" />
+    <Folder Include="sales-analysis\Domain\Model\Aggregates\" />
+    <Folder Include="sales-analysis\Domain\Model\Commands\" />
+    <Folder Include="sales-analysis\Domain\Model\Queries\" />
+    <Folder Include="sales-analysis\Domain\Repositories\" />
+    <Folder Include="sales-analysis\Domain\Services\" />
+    <Folder Include="sales-analysis\Infrastucture\Repositories\" />
+    <Folder Include="sales-analysis\Interfaces\REST\Resources\" />
+    <Folder Include="sales-analysis\Interfaces\REST\Transform\" />
+    <Folder Include="profile-management\Application\Infernal\CommandServices\" />
+    <Folder Include="profile-management\Application\Infernal\QueryServices\" />
+    <Folder Include="profile-management\authentication\Application\Infernal\CommandServices\" />
+    <Folder Include="profile-management\authentication\Application\Infernal\QueryServices\" />
+    <Folder Include="profile-management\authentication\Domain\Model\Aggregates\" />
+    <Folder Include="profile-management\authentication\Domain\Model\Commands\" />
+    <Folder Include="profile-management\authentication\Domain\Model\Queries\" />
+    <Folder Include="profile-management\authentication\Domain\Repositories\" />
+    <Folder Include="profile-management\authentication\Domain\Services\" />
+    <Folder Include="profile-management\authentication\Infrastucture\Repositories\" />
+    <Folder Include="profile-management\authentication\Interfaces\REST\Resources\" />
+    <Folder Include="profile-management\authentication\Interfaces\REST\Transform\" />
+    <Folder Include="profile-management\Domain\Model\Aggregates\" />
+    <Folder Include="profile-management\Domain\Model\Commands\" />
+    <Folder Include="profile-management\Domain\Model\Queries\" />
+    <Folder Include="profile-management\Domain\Repositories\" />
+    <Folder Include="profile-management\Domain\Services\" />
+    <Folder Include="profile-management\Infrastucture\Repositories\" />
+    <Folder Include="profile-management\Interfaces\REST\Resources\" />
+    <Folder Include="profile-management\Interfaces\REST\Transform\" />
+    <Folder Include="replenishment\Application\Infernal\CommandServices\" />
+    <Folder Include="replenishment\Application\Infernal\QueryServices\" />
+    <Folder Include="replenishment\authentication\Application\Infernal\CommandServices\" />
+    <Folder Include="replenishment\authentication\Application\Infernal\QueryServices\" />
+    <Folder Include="replenishment\authentication\Domain\Model\Aggregates\" />
+    <Folder Include="replenishment\authentication\Domain\Model\Commands\" />
+    <Folder Include="replenishment\authentication\Domain\Model\Queries\" />
+    <Folder Include="replenishment\authentication\Domain\Repositories\" />
+    <Folder Include="replenishment\authentication\Domain\Services\" />
+    <Folder Include="replenishment\authentication\Infrastucture\Repositories\" />
+    <Folder Include="replenishment\authentication\Interfaces\REST\Resources\" />
+    <Folder Include="replenishment\authentication\Interfaces\REST\Transform\" />
+    <Folder Include="replenishment\Domain\Model\Aggregates\" />
+    <Folder Include="replenishment\Domain\Model\Commands\" />
+    <Folder Include="replenishment\Domain\Model\Queries\" />
+    <Folder Include="replenishment\Domain\Repositories\" />
+    <Folder Include="replenishment\Domain\Services\" />
+    <Folder Include="replenishment\Infrastucture\Repositories\" />
+    <Folder Include="replenishment\Interfaces\REST\Resources\" />
+    <Folder Include="replenishment\Interfaces\REST\Transform\" />
+    <Folder Include="batch-management\Application\Infernal\CommandServices\" />
+    <Folder Include="batch-management\Application\Infernal\QueryServices\" />
+    <Folder Include="batch-management\authentication\Application\Infernal\CommandServices\" />
+    <Folder Include="batch-management\authentication\Application\Infernal\QueryServices\" />
+    <Folder Include="batch-management\authentication\Domain\Model\Aggregates\" />
+    <Folder Include="batch-management\authentication\Domain\Model\Commands\" />
+    <Folder Include="batch-management\authentication\Domain\Model\Queries\" />
+    <Folder Include="batch-management\authentication\Domain\Repositories\" />
+    <Folder Include="batch-management\authentication\Domain\Services\" />
+    <Folder Include="batch-management\authentication\Infrastucture\Repositories\" />
+    <Folder Include="batch-management\authentication\Interfaces\REST\Resources\" />
+    <Folder Include="batch-management\authentication\Interfaces\REST\Transform\" />
+    <Folder Include="batch-management\Domain\Model\Aggregates\" />
+    <Folder Include="batch-management\Domain\Model\Commands\" />
+    <Folder Include="batch-management\Domain\Model\Queries\" />
+    <Folder Include="batch-management\Domain\Repositories\" />
+    <Folder Include="batch-management\Domain\Services\" />
+    <Folder Include="batch-management\Infrastucture\Repositories\" />
+    <Folder Include="batch-management\Interfaces\REST\Resources\" />
+    <Folder Include="batch-management\Interfaces\REST\Transform\" />
+    <Folder Include="history-status\Application\Infernal\CommandServices\" />
+    <Folder Include="history-status\Application\Infernal\QueryServices\" />
+    <Folder Include="history-status\authentication\Application\Infernal\CommandServices\" />
+    <Folder Include="history-status\authentication\Application\Infernal\QueryServices\" />
+    <Folder Include="history-status\authentication\Domain\Model\Aggregates\" />
+    <Folder Include="history-status\authentication\Domain\Model\Commands\" />
+    <Folder Include="history-status\authentication\Domain\Model\Queries\" />
+    <Folder Include="history-status\authentication\Domain\Repositories\" />
+    <Folder Include="history-status\authentication\Domain\Services\" />
+    <Folder Include="history-status\authentication\Infrastucture\Repositories\" />
+    <Folder Include="history-status\authentication\Interfaces\REST\Resources\" />
+    <Folder Include="history-status\authentication\Interfaces\REST\Transform\" />
+    <Folder Include="history-status\Domain\Model\Aggregates\" />
+    <Folder Include="history-status\Domain\Model\Commands\" />
+    <Folder Include="history-status\Domain\Model\Queries\" />
+    <Folder Include="history-status\Domain\Repositories\" />
+    <Folder Include="history-status\Domain\Services\" />
+    <Folder Include="history-status\Infrastucture\Repositories\" />
+    <Folder Include="history-status\Interfaces\REST\Resources\" />
+    <Folder Include="history-status\Interfaces\REST\Transform\" />
+    <Folder Include="authentication\Application\Infernal\CommandServices\" />
+    <Folder Include="authentication\Application\Infernal\QueryServices\" />
+    <Folder Include="authentication\Domain\Model\Aggregates\" />
+    <Folder Include="authentication\Domain\Model\Commands\" />
+    <Folder Include="authentication\Domain\Model\Queries\" />
+    <Folder Include="authentication\Domain\Services\" />
+    <Folder Include="authentication\Domain\Repositories\" />
+    <Folder Include="authentication\Infrastucture\Repositories\" />
+    <Folder Include="authentication\Interfaces\REST\Transform\" />
+    <Folder Include="authentication\Interfaces\REST\Resources\" />
+    <Folder Include="a\" />
+  </ItemGroup>
+
+</Project>
