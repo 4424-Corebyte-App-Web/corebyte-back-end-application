@@ -2,7 +2,9 @@ using EntityFrameworkCore;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions;
 using Corebyte_platform.history_status.Domain.Model.Aggregates;
+using Corebyte_platform.orders.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
+using Corebyte_platform.batch_management.Domain.Model.Aggregates;
 
 
 
@@ -11,8 +13,12 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
     /// <summary>
     ///     Application database context
     /// </summary>
-    public class AppDbContext(DbContextOptions options) : DbContext(options)
+    public class AppDbContext : DbContext
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             // Add the created and updated interceptor
@@ -42,8 +48,28 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
             builder.Entity<Record>().Property(r => r.product).IsRequired().HasMaxLength(100);
             builder.Entity<Record>().Property(r => r.batch).IsRequired().HasColumnType("int(3)");
             builder.Entity<Record>().Property(r => r.stock).IsRequired().HasColumnType("int(3)");
+            
+            // Configuration of the Order entity
+            builder.Entity<Order>().HasKey(o => o.Id);
+            builder.Entity<Order>().Property(o => o.Id).IsRequired().ValueGeneratedOnAdd();
+            builder.Entity<Order>().Property(o => o.Customer).IsRequired().HasMaxLength(100);
+            builder.Entity<Order>().Property(o => o.Date).IsRequired();
+            builder.Entity<Order>().Property(o => o.Product).IsRequired().HasMaxLength(100);
+            builder.Entity<Order>().Property(o => o.Amount).IsRequired();
+            builder.Entity<Order>().Property(o => o.Total).IsRequired().HasColumnType("decimal(18,2)");
 
-            //Configuration of the entity Record
+            //Configuration of the entity Batch
+            builder.Entity<Batch>().HasKey(b => b.Id);
+            builder.Entity<Batch>().Property(b => b.Id).IsRequired().ValueGeneratedOnAdd();
+            builder.Entity<Batch>().Property(b => b.Name).IsRequired();
+            builder.Entity<Batch>().Property(b => b.Type).IsRequired().HasMaxLength(100);
+            builder.Entity<Batch>().Property(b => b.Status).IsRequired();
+            builder.Entity<Batch>().Property(b => b.Temperature).IsRequired();
+            builder.Entity<Batch>().Property(b => b.Amount).IsRequired().HasMaxLength(50);
+            builder.Entity<Batch>().Property(b => b.Total).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Entity<Batch>().Property(b => b.Date).IsRequired();
+            builder.Entity<Batch>().Property(b => b.NLote).IsRequired().HasMaxLength(100);
+            
             builder.UseSnakeCaseNamingConvention();
         }
     }
