@@ -2,6 +2,7 @@ using Corebyte_platform.history_status.Application.Infernal.CommandServices;
 using Corebyte_platform.history_status.Application.Infernal.QueryServices;
 using Corebyte_platform.history_status.Domain.Repositories;
 using Corebyte_platform.history_status.Domain.Services;
+using Corebyte_platform.history_status.Infrastucture.Persistence.EFC.Repositories;
 using Corebyte_platform.history_status.Infrastucture.Repositories;
 using Corebyte_platform.Shared.Domain.Repositories;
 using Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration;
@@ -55,13 +56,27 @@ else if (builder.Environment.IsProduction())
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-// News Bounded Context Injection Configuration
+// History Bounded Context Injection Configuration
 builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
-builder.Services.AddScoped<IHistoryCommandService, HistoryCommandService>();
+builder.Services.AddScoped<IHistoryCommandService>(provider => 
+    new HistoryCommandService(
+        provider.GetRequiredService<IHistoryRepository>(),
+        provider.GetRequiredService<IUnitOfWork>()
+    )
+);
 builder.Services.AddScoped<IHistoryQueryService, HistoryQueryService>();
 
-var app= builder.Build();
+// Record Bounded Context Injection Configuration
+builder.Services.AddScoped<IRecordRepository, RecordRepository>();
+builder.Services.AddScoped<IRecordCommandService>(provider => 
+    new RecordCommandService(
+        provider.GetRequiredService<IRecordRepository>(),
+        provider.GetRequiredService<IUnitOfWork>()
+    )
+);
+builder.Services.AddScoped<IRecordQueryService, RecordQueryService>();
 
+var app= builder.Build();
 
 // Verify Database Objects are created
 using (var scope = app.Services.CreateScope())

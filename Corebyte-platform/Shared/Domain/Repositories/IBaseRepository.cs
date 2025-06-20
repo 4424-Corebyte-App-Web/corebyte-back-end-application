@@ -1,4 +1,4 @@
-namespace Corebyte_platform.Shared.Domain.Repositories
+﻿namespace Corebyte_platform.Shared.Domain.Repositories
 {
     /// <summary>
     ///     Base repository interface for all repositories
@@ -22,7 +22,6 @@ namespace Corebyte_platform.Shared.Domain.Repositories
         /// <param name="id">The Entity ID to Find</param>
         /// <returns>Entity object if found</returns>
         Task<TEntity?> FindByIdAsync(int id);
-
         /// <summary>
         ///     Update entity
         /// </summary>

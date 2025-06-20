@@ -1,4 +1,4 @@
-namespace Corebyte_platform.Shared.Domain.Repositories
+﻿namespace Corebyte_platform.Shared.Domain.Repositories
 {
     /// <summary>
     ///     Unit of work interface
@@ -8,6 +8,7 @@ namespace Corebyte_platform.Shared.Domain.Repositories
     /// </remarks>
     public interface IUnitOfWork
     {
+        
         /// <summary>
         ///     Commit changes to the database
         /// </summary>
