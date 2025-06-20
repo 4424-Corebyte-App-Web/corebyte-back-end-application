@@ -21,26 +21,6 @@
 </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="orders\Application\Infernal\CommandServices\" />
-    <Folder Include="orders\Application\Infernal\QueryServices\" />
-    <Folder Include="orders\authentication\Application\Infernal\CommandServices\" />
-    <Folder Include="orders\authentication\Application\Infernal\QueryServices\" />
-    <Folder Include="orders\authentication\Domain\Model\Aggregates\" />
-    <Folder Include="orders\authentication\Domain\Model\Commands\" />
-    <Folder Include="orders\authentication\Domain\Model\Queries\" />
-    <Folder Include="orders\authentication\Domain\Repositories\" />
-    <Folder Include="orders\authentication\Domain\Services\" />
-    <Folder Include="orders\authentication\Infrastucture\Repositories\" />
-    <Folder Include="orders\authentication\Interfaces\REST\Resources\" />
-    <Folder Include="orders\authentication\Interfaces\REST\Transform\" />
-    <Folder Include="orders\Domain\Model\Aggregates\" />
-    <Folder Include="orders\Domain\Model\Commands\" />
-    <Folder Include="orders\Domain\Model\Queries\" />
-    <Folder Include="orders\Domain\Repositories\" />
-    <Folder Include="orders\Domain\Services\" />
-    <Folder Include="orders\Infrastucture\Repositories\" />
-    <Folder Include="orders\Interfaces\REST\Resources\" />
-    <Folder Include="orders\Interfaces\REST\Transform\" />
     <Folder Include="sales-analysis\Application\Infernal\CommandServices\" />
     <Folder Include="sales-analysis\Application\Infernal\QueryServices\" />
     <Folder Include="sales-analysis\authentication\Application\Infernal\CommandServices\" />
