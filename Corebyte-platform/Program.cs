@@ -1,8 +1,8 @@
-using Corebyte_platform.history_status.Application.Infernal.CommandServices;
-using Corebyte_platform.history_status.Application.Infernal.QueryServices;
-using Corebyte_platform.history_status.Domain.Repositories;
-using Corebyte_platform.history_status.Domain.Services;
-using Corebyte_platform.history_status.Infrastucture.Repositories;
+using Corebyte_platform.orders.Application.Infernal.CommandServices;
+using Corebyte_platform.orders.Application.Infernal.QueryServices;
+using Corebyte_platform.orders.Domain.Repositories;
+using Corebyte_platform.orders.Domain.Services;
+using Corebyte_platform.orders.Infrastucture.Persistence.EFC.Repositories;
 using Corebyte_platform.Shared.Domain.Repositories;
 using Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration;
@@ -55,10 +55,21 @@ else if (builder.Environment.IsProduction())
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-// News Bounded Context Injection Configuration
-builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
-builder.Services.AddScoped<IHistoryCommandService, HistoryCommandService>();
-builder.Services.AddScoped<IHistoryQueryService, HistoryQueryService>();
+// Order Bounded Context Injection Configuration
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderCommandService, OrderCommandService>();
+builder.Services.AddScoped<IOrderCommandService>(provider => 
+    new OrderCommandService(
+        provider.GetRequiredService<IOrderRepository>(),
+        
+        provider.GetRequiredService<IUnitOfWork>()
+    )
+);
+
+
+
+builder.Services.AddScoped<IOrderQueryService, OrderQueryService>();
 
 var app= builder.Build();
 
