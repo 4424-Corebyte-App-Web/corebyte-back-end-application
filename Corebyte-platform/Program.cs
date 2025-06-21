@@ -1,82 +1,79 @@
-using Corebyte_platform.history_status.Application.Infernal.CommandServices;
-using Corebyte_platform.history_status.Application.Infernal.QueryServices;
-using Corebyte_platform.history_status.Domain.Repositories;
-using Corebyte_platform.history_status.Domain.Services;
-using Corebyte_platform.history_status.Infrastucture.Repositories;
-using Corebyte_platform.Shared.Domain.Repositories;
-using Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration;
-using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration;
-using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Repositories;
-using EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+using Corebyte_platform.Replenishment.Application.Internal.CommandServices;
+using Corebyte_platform.Replenishment.Application.Internal.QueryServices;
 
+using Corebyte_platform.Replenishment.Domain.Respositories;
+using Corebyte_platform.Replenishment.Domain.Services;
+using Corebyte_platform.Replenishment.Infrastructure.Persistence.EFC.Repositories;
+using Microsoft.EntityFrameworkCore;
+using replenishment.API.Shared.Domain.Repositories;
+using replenishment.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
+using replenishment.API.Shared.Infrastructure.Persistence.EFC.Configuration;
+using replenishment.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Configure Lower Case URLs
-builder.Services.AddRouting(options => options.LowercaseUrls = true);
-
-// Add services to the container.
+//===================================Add services to the container=====================================
+builder.Services.AddControllers();
 builder.Services.AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()));
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => options.EnableAnnotations());
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-if (connectionString is null)
+if (connectionString == null)
 {
-    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    throw new InvalidOperationException("Connection string not found.");
 }
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
 
-// Configure Database Context and Logging Levels
-if (builder.Environment.IsDevelopment())
-    builder.Services.AddDbContext<AppDbContext>(
-        options =>
-        {
-            options.UseMySQL(connectionString)
-                .LogTo(Console.WriteLine, LogLevel.Information)
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors();
-        });
-else if (builder.Environment.IsProduction())
-    builder.Services.AddDbContext<AppDbContext>(
-        options =>
-        {
-            options.UseMySQL(connectionString)
-                .LogTo(Console.WriteLine, LogLevel.Error)
-                .EnableDetailedErrors();
-        });
-
-// Configure Dependency Injection
-
-// Shared Bounded Context Injection Configuration
+        options.UseMySQL(connectionString)
+            .LogTo(Console.WriteLine, LogLevel.Information)
+            .EnableSensitiveDataLogging()
+            .EnableDetailedErrors();
+    }
+    else if (builder.Environment.IsProduction())
+    {
+        options.UseMySQL(connectionString)
+            .LogTo(Console.WriteLine, LogLevel.Error);
+    }
+});
+//======== Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle ========
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options => options.EnableAnnotations());
+//======================================================================================================
+// Dependency Injection
+//===================================== Shared Bounded Context ====================================
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+//=================================== END Shared Bounded Context ==================================
 
+//===================================== 1. Bounded Context ================================
 
-// News Bounded Context Injection Configuration
-builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
-builder.Services.AddScoped<IHistoryCommandService, HistoryCommandService>();
-builder.Services.AddScoped<IHistoryQueryService, HistoryQueryService>();
+//===================================== Bounded Context ===============================
 
-var app= builder.Build();
+//===================================== 1. Oscar Context ================================
 
+builder.Services.AddScoped<IReplenishmentRepository, ReplenishmentRepository>();
+builder.Services.AddScoped<IReplenishmentCommandService, ReplenishmentCommandService>();
+builder.Services.AddScoped<IReplenishmentQueryService, ReplenishmentQueryService>();
+//===================================== End Oscar bounded Context ===============================
 
-// Verify Database Objects are created
+//===================================== End Oscar bounded Context ===============================
+
+var app = builder.Build();
+
+//==================== Verify if the database exists and create it if it doesn't ===================
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AppDbContext>();
     context.Database.EnsureCreated();
 }
+//===============================================================================================
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 

@@ -1,16 +1,6 @@
-namespace Corebyte_platform.Shared.Domain.Repositories
+namespace replenishment.API.Shared.Domain.Repositories;
+
+public interface IUnitOfWork
 {
-    /// <summary>
-    ///     Unit of work interface
-    /// </summary>
-    /// <remarks>
-    ///     This interface defines the basic operations for a unit of work
-    /// </remarks>
-    public interface IUnitOfWork
-    {
-        /// <summary>
-        ///     Commit changes to the database
-        /// </summary>
-        Task CompleteAsync();
-    }
+    Task CompleteAsync();
 }

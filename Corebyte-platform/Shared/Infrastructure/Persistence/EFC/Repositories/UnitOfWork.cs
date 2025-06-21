@@ -1,13 +1,19 @@
-using Corebyte_platform.Shared.Domain.Repositories;
-using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration;
+using replenishment.API.Shared.Domain.Repositories;
+using replenishment.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 
-namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Repositories
+namespace replenishment.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+
+public class UnitOfWork : IUnitOfWork
 {
-    public class UnitOfWork(AppDbContext context) : IUnitOfWork
+    private readonly AppDbContext _context;
+    
+    public UnitOfWork(AppDbContext context)
     {
-        public async Task CompleteAsync()
-        {
-            await context.SaveChangesAsync();
-        }
+        _context = context;
+    }
+    
+    public async Task CompleteAsync()
+    {
+        await _context.SaveChangesAsync();
     }
 }
