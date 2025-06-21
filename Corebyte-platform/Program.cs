@@ -18,10 +18,17 @@ using Corebyte_platform.batch_management.Domain.Repositories;
 using Corebyte_platform.batch_management.Domain.Services;
 using Corebyte_platform.batch_management.Infrastucture.Repositories;
 
+using Corebyte_platform.replenishment.Application.Internal.CommandServices;
+using Corebyte_platform.replenishment.Application.Internal.QueryServices;
+using Corebyte_platform.replenishment.Domain.Respositories;
+using Corebyte_platform.replenishment.Domain.Services;
+using Corebyte_platform.replenishment.Infrastructure.Persistence.EFC.Repositories;
+
 using Corebyte_platform.Shared.Domain.Repositories;
 using Corebyte_platform.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration;
 using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Repositories;
+
 using EntityFrameworkCore;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -109,6 +116,11 @@ builder.Services.AddDbContext<BatchContext>(options =>
 builder.Services.AddScoped<IBatchRepository, BatchRepository>();
 builder.Services.AddScoped<BatchService>();
 builder.Services.AddMediatR(typeof(CreateBatchCommand));
+
+// replenishment bounded context DI
+builder.Services.AddScoped<IReplenishmentRepository, ReplenishmentRepository>();
+builder.Services.AddScoped<IReplenishmentCommandService, ReplenishmentCommandService>();
+builder.Services.AddScoped<IReplenishmentQueryService, ReplenishmentQueryService>();
 
 var app= builder.Build();
 

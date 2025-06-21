@@ -5,8 +5,7 @@ using Corebyte_platform.history_status.Domain.Model.Aggregates;
 using Corebyte_platform.orders.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
 using Corebyte_platform.batch_management.Domain.Model.Aggregates;
-
-
+using Corebyte_platform.replenishment.Domain.Model.Aggregate;
 
 namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
 {
@@ -69,6 +68,17 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
             builder.Entity<Batch>().Property(b => b.Total).IsRequired().HasColumnType("decimal(18,2)");
             builder.Entity<Batch>().Property(b => b.Date).IsRequired();
             builder.Entity<Batch>().Property(b => b.NLote).IsRequired().HasMaxLength(100);
+            
+            //Configuration of the entity Replenishment
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().HasKey(b=> b.Id);
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Id).ValueGeneratedOnAdd();
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.OrderNumber).IsRequired();
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Name).IsRequired().HasMaxLength(100);
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Type).IsRequired().HasMaxLength(50);
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Date).IsRequired();
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.StockActual).IsRequired();
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.StockMinimo).IsRequired();
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Price).IsRequired().HasColumnType("decimal(18,2)");
             
             builder.UseSnakeCaseNamingConvention();
         }
