@@ -1,3 +1,4 @@
+using Corebyte_platform.authentication.Domain.Model.Aggregates;
 using EntityFrameworkCore;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions;
@@ -18,6 +19,7 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
         {
         }
 
+        public DbSet<User> Users { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             // Add the created and updated interceptor
@@ -79,6 +81,28 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.StockActual).IsRequired();
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.StockMinimo).IsRequired();
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Price).IsRequired().HasColumnType("decimal(18,2)");
+            
+            // Configuración de la entidad User
+            builder.Entity<User>(entity =>
+            {
+                entity.ToTable("users");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .IsRequired()
+                    .ValueGeneratedOnAdd();
+    
+                entity.Property(e => e.Username)
+                    .IsRequired()
+                    .HasMaxLength(100);
+        
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(200);
+        
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            });
             
             builder.UseSnakeCaseNamingConvention();
         }
