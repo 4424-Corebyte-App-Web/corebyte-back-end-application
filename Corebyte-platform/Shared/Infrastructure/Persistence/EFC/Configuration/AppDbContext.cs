@@ -1,4 +1,5 @@
 using Corebyte_platform.authentication.Domain.Model.Aggregates;
+using Corebyte_platform.batch_management.Domain.Model.Aggregates;
 using EntityFrameworkCore;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions;
