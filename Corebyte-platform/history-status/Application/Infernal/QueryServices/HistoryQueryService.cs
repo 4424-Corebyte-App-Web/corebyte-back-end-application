@@ -1,5 +1,6 @@
 using Corebyte_platform.history_status.Domain.Model.Aggregates;
 using Corebyte_platform.history_status.Domain.Model.Queries;
+using Corebyte_platform.history_status.Domain.Model.ValueObjects;
 using Corebyte_platform.history_status.Domain.Repositories;
 using Corebyte_platform.history_status.Domain.Services;
 using Microsoft.EntityFrameworkCore;
@@ -49,7 +50,7 @@ namespace Corebyte_platform.history_status.Application.Infernal.QueryServices
         /// <returns>A list of histories</returns>
         public async Task<History?> Handle(GetHistoryByStatusQuery query)
         {
-            return await historyRepository.findByStatusAsync(query.status);
+            return await historyRepository.findByStatusAsync(Status.PENDING);
         }
 
         /// <summary>

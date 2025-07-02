@@ -1,5 +1,6 @@
-﻿using Corebyte_platform.history_status.Domain.Model.Aggregates;
+using Corebyte_platform.history_status.Domain.Model.Aggregates;
 using Corebyte_platform.history_status.Domain.Model.Commands;
+using Corebyte_platform.history_status.Domain.Model.ValueObjects;
 using Corebyte_platform.history_status.Domain.Repositories;
 using Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Repositories;
 using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration;
@@ -37,7 +38,7 @@ namespace Corebyte_platform.history_status.Infrastucture.Repositories
         /// </summary>
         /// <param name="status">The status to search</param>
         /// <returns>The history object</returns>
-        public async Task<History?> findByStatusAsync(string status)
+        public async Task<History?> findByStatusAsync(Status status)
         {
             return await Context.Set<History>().FirstOrDefaultAsync(h => h.status == status);
         }
