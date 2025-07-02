@@ -1,4 +1,6 @@
-﻿namespace Corebyte_platform.history_status.Interfaces.REST.Resources
+﻿using Corebyte_platform.history_status.Domain.Model.ValueObjects;
+
+namespace Corebyte_platform.history_status.Interfaces.REST.Resources
 {
     /// <summary>
     /// Represents the data required to create a history. 
@@ -9,5 +11,5 @@
     /// <param name="amount">The amount</param>
     /// <param name="total">The total</param>
     /// <param name="status">The status</param>
-    public record CreateHistoryResource(string customer, DateTime date, string product, int amount, double total, string status);
+    public record CreateHistoryResource(string customer, DateTime date, string product, int amount, double total, Status status);
 }

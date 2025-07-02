@@ -1,5 +1,6 @@
 using Corebyte_platform.history_status.Domain.Model.Aggregates;
 using Corebyte_platform.history_status.Domain.Model.Commands;
+using Corebyte_platform.history_status.Domain.Model.ValueObjects;
 using Corebyte_platform.Shared.Domain.Repositories;
 
 namespace Corebyte_platform.history_status.Domain.Repositories
@@ -15,7 +16,7 @@ namespace Corebyte_platform.history_status.Domain.Repositories
         Task<IEnumerable<History>> findByCustomerAsync(string customer);
         
         Task<History?> findByProductAsync(string product);
-        Task<History?> findByStatusAsync(string status);
+        Task<History?> findByStatusAsync(Status status);
         Task<History?> findByAmountAndTotalAsync(int amount, double total);
 
         /// <summary>

@@ -4,5 +4,5 @@
     ///     Query to get a history by status.
     /// </summary>
     /// <param name="status">The status to search</param>
-    public record GetHistoryByStatusQuery(string status);
+    public record GetHistoryByStatusQuery(String status);
 }
