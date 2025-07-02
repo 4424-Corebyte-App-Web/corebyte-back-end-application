@@ -1,4 +1,5 @@
 using Corebyte_platform.history_status.Domain.Model.Commands;
+using Corebyte_platform.history_status.Domain.Model.ValueObjects;
 
 namespace Corebyte_platform.history_status.Domain.Model.Aggregates
 {
@@ -11,7 +12,7 @@ namespace Corebyte_platform.history_status.Domain.Model.Aggregates
         /// <summary>
         ///     The Id of the history.
         /// </summary>
-        public int Id { get; }
+        public int Id { get; private set; }
         /// <summary>
         ///     The customer of the history.
         /// </summary>
@@ -35,18 +36,26 @@ namespace Corebyte_platform.history_status.Domain.Model.Aggregates
         /// <summary>
         ///     The status of the history.
         /// </summary>
-        public string status { get; private set; }
+        public Status status { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the History class.
         /// </summary>
-        protected History() { 
+        // Private constructor for Entity Framework
+        private History() { }
+
+        protected History(Status statusinitial) { 
             customer=string.Empty; 
             date=DateTime.Now;
             product=string.Empty;
             amount=0;
             total=0.0;
-            status=string.Empty;
+            status=statusinitial;
+        }
+
+        public void ChangeStatus(Status newStatus)
+        {
+            status = newStatus;
         }
         /// <summary>
         ///     Constructor for the History aggregate.
@@ -63,7 +72,7 @@ namespace Corebyte_platform.history_status.Domain.Model.Aggregates
             product = command.product;
             amount = command.amount;
             total = command.total;
-            status = command.status;
+            status = Status.PENDING;
         }
 
         /// <summary>
@@ -81,14 +90,14 @@ namespace Corebyte_platform.history_status.Domain.Model.Aggregates
             string product,
             int amount,
             double total,
-            string status)
+            Status status)
         {
             this.customer = customer ?? throw new ArgumentNullException(nameof(customer));
             this.date = date;
             this.product = product ?? throw new ArgumentNullException(nameof(product));
             this.amount = amount >= 0 ? amount : throw new ArgumentOutOfRangeException(nameof(amount), "Amount cannot be negative");
             this.total = total >= 0 ? total : throw new ArgumentOutOfRangeException(nameof(total), "Total cannot be negative");
-            this.status = status ?? throw new ArgumentNullException(nameof(status));
+            this.status = status;
         }
     }
 }

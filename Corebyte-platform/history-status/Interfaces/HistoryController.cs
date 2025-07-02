@@ -1,6 +1,6 @@
 namespace Corebyte_platform.history_status.Interfaces
 {
-    using Corebyte_platform.history_status.Domain.Services;
+    using Corebyte_platform.history_status.Domain.Model.ValueObjects;
     using Corebyte_platform.history_status.Interfaces.REST.Resources;
     using Corebyte_platform.history_status.Interfaces.REST.Transform;
     using Corebyte_platform.history_status.Domain.Model.Queries;
@@ -9,6 +9,7 @@ namespace Corebyte_platform.history_status.Interfaces
     using Microsoft.AspNetCore.Mvc;
     using System.Net.Mime;
     using Swashbuckle.AspNetCore.Annotations;
+    using Corebyte_platform.history_status.Domain.Services;
 
     /// <summary>
     /// History controller.
@@ -140,26 +141,55 @@ namespace Corebyte_platform.history_status.Interfaces
         /// <param name="id">The ID of the history record to update</param>
         /// <param name="resource">The updated history data</param>
         /// <returns>The updated history record</returns>
-        [HttpPut("{id}")]
-        [SwaggerOperation(
-            Summary = "Updates an existing history record by ID",
-            Description = "Updates an existing history record with the specified ID",
-            OperationId = "UpdateHistoryById")]
-        [SwaggerResponse(200, "History record was updated successfully", typeof(HistoryResource))]
-        [SwaggerResponse(400, "Invalid input data")]
-        [SwaggerResponse(404, "No history records found for the id")]
-        [SwaggerResponse(409, "A history record with the same customer, product and date already exists")]
-        public async Task<IActionResult> UpdateHistory(int id, [FromBody] UpdateHistoryResource resource)
+        [HttpPut("{id}/status")]
+[SwaggerOperation(
+    Summary = "Updates the status of a history record",
+    Description = "Updates only the status of an existing history record",
+    OperationId = "UpdateHistoryStatus")]
+[SwaggerResponse(200, "Status was updated successfully", typeof(HistoryResource))]
+[SwaggerResponse(400, "Invalid status value")]
+[SwaggerResponse(404, "History record not found")]
+public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateHistoryStatusResource resource)
+{
+    try
+    {
+        // Get the existing history
+        var getHistoryQuery = new GetHistoryByIdQuery(id);
+        var existingHistories = await historyQueryService.Handle(getHistoryQuery);
+        var existingHistory = existingHistories.FirstOrDefault();
+        
+        if (existingHistory == null)
         {
-            var updateHistoryCommand = UpdateHistoryCommandFromResourceAssembler.ToCommandFromResource(id, resource);
-            var history = await historyCommandService.Handle(updateHistoryCommand);
-            if (history is null)
-            {
-                return NotFound(new { message = "The history record was not found" });
-            }
-            var historyResource = HistoryResourceFromEntityAssembler.ToResourceFromEntity(history);
-            return Ok(historyResource);
+            return NotFound(new { message = "History record not found" });
         }
+
+        // Create and execute the update command
+        var command = new UpdateHistoryCommand(
+            Id: id,
+            Customer: existingHistory.customer,
+            Date: existingHistory.date,
+            Product: existingHistory.product,
+            Amount: existingHistory.amount,
+            Total: existingHistory.total,
+            Status: resource.Status
+        );
+
+        var updatedHistory = await historyCommandService.Handle(command);
+
+        if (updatedHistory == null)
+        {
+            return StatusCode(500, new { message = "Failed to update history status" });
+        }
+
+        var historyResource = HistoryResourceFromEntityAssembler.ToResourceFromEntity(updatedHistory);
+        return Ok(historyResource);
+    }
+    catch (Exception ex)
+    {
+        // Log the error here
+        return StatusCode(500, new { message = "An error occurred while updating the status", error = ex.Message });
+    }
+}
         /// <summary>
         /// Gets a history by id. 
         /// </summary>
