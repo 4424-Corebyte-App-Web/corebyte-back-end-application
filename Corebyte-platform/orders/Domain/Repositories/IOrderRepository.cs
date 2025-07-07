@@ -15,6 +15,7 @@ namespace Corebyte_platform.orders.Domain.Repositories
         Task<IEnumerable<Order>> FindByCustomerAsync(string customer);
         Task<Order?> FindByProductAsync(string product);
         Task<Order?> FindByAmountAndTotalAsync(int amount, double total);
+        Task<Order?> FindByUrl(string url);
 
 
         /// <summary>
