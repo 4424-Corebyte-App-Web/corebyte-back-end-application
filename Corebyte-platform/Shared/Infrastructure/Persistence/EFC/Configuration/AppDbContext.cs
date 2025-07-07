@@ -1,13 +1,15 @@
+// Using IAM User instead of authentication User
 using Corebyte_platform.authentication.Domain.Model.Aggregates;
 using Corebyte_platform.batch_management.Domain.Model.Aggregates;
+using Corebyte_platform.history_status.Domain.Model.Aggregates;
+using Corebyte_platform.history_status.Domain.Model.ValueObjects;
+using Corebyte_platform.IAM.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using Corebyte_platform.orders.Domain.Model.Aggregates;
+using Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Converters;
+using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions;
 using EntityFrameworkCore;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
-using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions;
-using Corebyte_platform.history_status.Domain.Model.Aggregates;
-using Corebyte_platform.orders.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
-using Corebyte_platform.history_status.Domain.Model.ValueObjects;
-using Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Converters;
 
 namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
 {
@@ -20,7 +22,7 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        // Using IAM User instead of authentication User
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             // Add the created and updated interceptor
@@ -31,6 +33,16 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            // Configure IAM User entity
+            builder.Entity<Corebyte_platform.IAM.Domain.Model.Aggregates.User>(entity =>
+            {
+                entity.ToTable("users");
+                entity.HasKey(u => u.Id);
+                entity.Property(u => u.Username).IsRequired().HasMaxLength(50);
+                entity.Property(u => u.PasswordHash).IsRequired().HasMaxLength(255);
+                entity.HasIndex(u => u.Username).IsUnique();
+            });
             // Configuration of the entity History
             builder.Entity<History>(entity =>
             {
@@ -89,10 +101,10 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.StockMinimo).IsRequired();
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Price).IsRequired().HasColumnType("decimal(18,2)");
             
-            // Configuración de la entidad User
-            builder.Entity<User>(entity =>
+            // Configuration for authentication User entity
+            builder.Entity<Corebyte_platform.authentication.Domain.Model.Aggregates.User>(entity =>
             {
-                entity.ToTable("users");
+                entity.ToTable("auth_users"); // Different table name for authentication users
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                     .IsRequired()
@@ -111,6 +123,11 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
                     .HasMaxLength(200);
             });
             
+            // Configuration for IAM User entity will be handled by ApplyIamConfiguration()
+
+            // Apply configurations for the IAM bounded context
+            builder.ApplyIamConfiguration();
+
             builder.UseSnakeCaseNamingConvention();
         }
     }

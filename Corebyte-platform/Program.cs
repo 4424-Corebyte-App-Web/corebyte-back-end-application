@@ -40,6 +40,18 @@ using System.Text;
 using Corebyte_platform.authentication.Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Corebyte_platform.IAM.Infrastructure.Tokens.JWT.Configuration;
+using Corebyte_platform.IAM.Domain.Services;
+using Corebyte_platform.IAM.Application.Internal.CommandServices;
+using Corebyte_platform.IAM.Application.Internal.OutboundServices;
+using Corebyte_platform.IAM.Application.Internal.QueryServices;
+using Corebyte_platform.IAM.Infrastructure.Tokens.JWT.Services;
+using Corebyte_platform.IAM.Infrastructure.Hashing.BCrypt.Services;
+using Corebyte_platform.IAM.Interfaces.ACL.Services;
+using Corebyte_platform.IAM.Interfaces.ACL;
+using Cortex.Mediator.Commands;
+using Cortex.Mediator.Behaviors;
+using Cortex.Mediator.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -136,12 +148,31 @@ builder.Services.AddScoped<IReplenishmentRepository, ReplenishmentRepository>();
 builder.Services.AddScoped<IReplenishmentCommandService, ReplenishmentCommandService>();
 builder.Services.AddScoped<IReplenishmentQueryService, ReplenishmentQueryService>();
 
-// authentication bounded context DI
-// Authentication Bounded Context Injection
-builder.Services.AddScoped<Corebyte_platform.authentication.Domain.Repositories.IUserRepository, 
-    Corebyte_platform.authentication.Infrastucture.Repositories.UserRepository>();
-builder.Services.AddScoped<LoginService>();
-builder.Services.AddScoped<RegistrationService>();
+// Configure JWT settings
+builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
+
+// Register IAM services
+builder.Services.AddScoped<Corebyte_platform.IAM.Domain.Repositories.IUserRepository, Corebyte_platform.IAM.Infrastructure.Persistence.EFC.Repositories.UserRepository>();
+builder.Services.AddScoped<IUserCommandService, UserCommandService>();
+builder.Services.AddScoped<IUserQueryService, UserQueryService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IHashingService, HashingService>();
+builder.Services.AddScoped<IIamContextFacade, IamContextFacade>();
+
+// Register Authentication services
+builder.Services.AddScoped<Corebyte_platform.authentication.Domain.Repositories.IUserRepository, Corebyte_platform.authentication.Infrastucture.Repositories.UserRepository>();
+builder.Services.AddScoped<Corebyte_platform.authentication.Application.Services.LoginService>();
+builder.Services.AddScoped<Corebyte_platform.authentication.Application.Services.RegistrationService>();
+
+// Add Mediator for CQRS
+builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
+builder.Services.AddCortexMediator(
+    configuration: builder.Configuration,
+    handlerAssemblyMarkerTypes: new[] { typeof(Program) }, configure: options =>
+    {
+        options.AddOpenCommandPipelineBehavior(typeof(LoggingCommandBehavior<>));
+        //options.AddDefaultBehaviors();
+    });
 
 // Add Controllers from Authentication Bounded Context
 builder.Services.AddControllers()
