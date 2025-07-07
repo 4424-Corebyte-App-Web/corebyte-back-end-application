@@ -1,4 +1,6 @@
-﻿namespace Corebyte_platform.history_status.Domain.Model.Commands
+﻿using Corebyte_platform.history_status.Domain.Model.ValueObjects;
+
+namespace Corebyte_platform.history_status.Domain.Model.Commands
 {
     /// <summary>
     ///     Command to create a history entry.
@@ -9,5 +11,5 @@
     /// <param name="amount">The amount of the history</param>
     /// <param name="total">The total of the history</param>
     /// <param name="status">The status of the history</param>
-    public record CreateHistoryCommand(string customer, DateTime date, string product, int amount, double total, string status);
+    public record CreateHistoryCommand(string customer, DateTime date, string product, int amount, double total, Status status);
 }

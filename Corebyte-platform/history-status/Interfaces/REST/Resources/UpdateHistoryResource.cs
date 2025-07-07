@@ -1,3 +1,5 @@
+using Corebyte_platform.history_status.Domain.Model.ValueObjects;
+
 namespace Corebyte_platform.history_status.Interfaces.REST.Resources
 {
     /// <summary>
@@ -15,5 +17,5 @@ namespace Corebyte_platform.history_status.Interfaces.REST.Resources
         string Product,
         int Amount,
         double Total,
-        string Status);
+        Status Status);
 }
