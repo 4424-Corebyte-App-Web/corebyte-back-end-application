@@ -2,6 +2,7 @@ using EntityFrameworkCore;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration.Extensions;
 using Corebyte_platform.history_status.Domain.Model.Aggregates;
+using Corebyte_platform.orders.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -42,6 +43,16 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
             builder.Entity<Record>().Property(r => r.product).IsRequired().HasMaxLength(100);
             builder.Entity<Record>().Property(r => r.batch).IsRequired().HasColumnType("int(3)");
             builder.Entity<Record>().Property(r => r.stock).IsRequired().HasColumnType("int(3)");
+            
+            // Configuration of the Order entity
+            builder.Entity<Order>().HasKey(o => o.Id);
+            builder.Entity<Order>().Property(o => o.Id).IsRequired().ValueGeneratedOnAdd();
+            builder.Entity<Order>().Property(o => o.Customer).IsRequired().HasMaxLength(100);
+            builder.Entity<Order>().Property(o => o.Date).IsRequired();
+            builder.Entity<Order>().Property(o => o.Product).IsRequired().HasMaxLength(100);
+            builder.Entity<Order>().Property(o => o.Amount).IsRequired();
+            builder.Entity<Order>().Property(o => o.Total).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Entity<Order>().Property(o => o.Url).IsRequired().HasMaxLength(100);
 
             //Configuration of the entity Record
             builder.UseSnakeCaseNamingConvention();
