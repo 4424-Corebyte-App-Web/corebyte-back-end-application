@@ -1,4 +1,5 @@
-﻿using Corebyte_platform.orders.Domain.Model.Commands;
+using Corebyte_platform.orders.Domain.Model.Commands;
+using Corebyte_platform.orders.Domain.Model.ValueObjects;
 
 namespace Corebyte_platform.orders.Domain.Model.Aggregates
 {
@@ -26,7 +27,7 @@ namespace Corebyte_platform.orders.Domain.Model.Aggregates
         /// <summary>
         /// The product of the order.
         /// </summary>
-        public string Product { get; private set; }
+        public Products Product { get; private set; }
         
         /// <summary>
         /// The amount of the order.
@@ -37,6 +38,13 @@ namespace Corebyte_platform.orders.Domain.Model.Aggregates
         /// The total of the order.
         /// </summary>
         public double Total { get; private set; }
+
+        /// <summary>
+        /// The Url of the url
+        /// </summary>
+        public string Url { get; private set; }
+
+
         /// <summary>
         /// Initializes a new instance of the Order class.
         /// </summary>
@@ -44,9 +52,10 @@ namespace Corebyte_platform.orders.Domain.Model.Aggregates
         {
             Customer = string.Empty;
             Date = DateTime.Now;
-            Product = string.Empty;
+            Product = Products.Vino;
             Amount = 0;
             Total = 0.0;
+            Url = string.Empty;
         }
         /// <summary>
         /// Constructor for the Order aggregate.
@@ -58,9 +67,10 @@ namespace Corebyte_platform.orders.Domain.Model.Aggregates
         {
             Customer = command.customer;
             Date = command.date;
-            Product = command.product;
+            Product = command.product;  // Use the product from the command
             Amount = command.amount;
             Total = command.total;
+            Url = command.url;
         }
 
        
