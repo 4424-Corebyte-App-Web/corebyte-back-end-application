@@ -18,10 +18,9 @@ namespace Corebyte_platform.batch_management.Application.Infernal.QueryServices
 
         public async Task<BatchResource> Handle(GetBatchByIdQuery request, CancellationToken cancellationToken)
         {
-            var batch = await _repository.GetByIdAsync(request.Id)
-                ?? throw new KeyNotFoundException($"Batch {request.Id} not found");
+            var batch = await _repository.GetByIdAsync(request.Name)
+                ?? throw new KeyNotFoundException($"Batch with name '{request.Name}' not found");
             return BatchTransformer.ToResource(batch);
         }
     }
 }
-

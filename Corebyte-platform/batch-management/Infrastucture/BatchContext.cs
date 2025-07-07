@@ -14,7 +14,36 @@ namespace Corebyte_platform.batch_management.Infrastucture
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Batch>().ToTable("Batches");
+            modelBuilder.Entity<Batch>(entity =>
+            {
+                entity.ToTable("Batches");
+                
+                // Configure Name as the primary key
+                entity.HasKey(b => b.Name);
+                
+                // Configure properties
+                entity.Property(b => b.Name)
+                    .IsRequired()
+                    .HasMaxLength(255);
+                    
+                entity.Property(b => b.NLote)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnName("n_lote");
+                    
+                entity.Property(b => b.Type)
+                    .IsRequired()
+                    .HasMaxLength(100);
+                    
+                entity.Property(b => b.Status)
+                    .IsRequired()
+                    .HasMaxLength(100);
+                    
+                entity.Property(b => b.Amount)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+            
             base.OnModelCreating(modelBuilder);
         }
     }

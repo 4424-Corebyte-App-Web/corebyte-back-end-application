@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
@@ -11,7 +11,7 @@ using Corebyte_platform.batch_management.Interfaces.REST.Resources;
 namespace Corebyte_platform.batch_management.Interfaces.REST.Controllers
 {
     [ApiController]
-    [Route("batch-management")]
+    [Route("api/v1/batch-management")]
     public class BatchController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -30,42 +30,62 @@ namespace Corebyte_platform.batch_management.Interfaces.REST.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id:guid}")]
-        [SwaggerOperation(Summary = "Get batch by id")]
+        [HttpGet("api/v1/{name}")]
+        [SwaggerOperation(Summary = "Get batch by name")]
         [ProducesResponseType(typeof(BatchResource), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetByName(string name)
         {
-            var result = await _mediator.Send(new GetBatchByIdQuery(id));
+            var result = await _mediator.Send(new GetBatchByIdQuery(name));
             return Ok(result);
         }
 
         [HttpPost]
         [SwaggerOperation(Summary = "Create a new batch")]
         [ProducesResponseType(typeof(Guid), 201)]
-        public async Task<IActionResult> Create([FromBody] CreateBatchCommand cmd)
+        public async Task<IActionResult> Create([FromBody] CreateBatchDto dto)
         {
-            var id = await _mediator.Send(cmd);
-            return CreatedAtAction(nameof(GetById), new { id }, id);
+            var cmd = new CreateBatchCommand(
+                dto.Name,
+                dto.Type,
+                dto.Status,
+                dto.Temperature,
+                dto.Amount,
+                dto.Total,
+                dto.Date,
+                dto.NLote
+            );
+            var name = await _mediator.Send(cmd);
+            return CreatedAtAction(nameof(GetByName), new { name }, name);
         }
-
-        [HttpPut("{id:guid}")]
-        [SwaggerOperation(Summary = "Update an existing batch")]
+        //name
+        [HttpPut("api/v1/{name}")]
+        [SwaggerOperation(Summary = "Update an existing batch by name")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateBatchCommand cmd)
+        public async Task<IActionResult> Update(string name, [FromBody] UpdateBatchDto dto)
         {
-            if (id != cmd.Id) return BadRequest();
+            var cmd = new UpdateBatchCommand(
+                name,                    // Current name (used to find the batch)
+                dto.Name,               // New name (can be the same as current)
+                dto.Type,
+                dto.Status,
+                dto.Temperature,
+                dto.Amount,
+                dto.Total,
+                dto.Date,
+                dto.NLote
+            );
             await _mediator.Send(cmd);
             return NoContent();
         }
 
-        [HttpDelete("{id:guid}")]
-        [SwaggerOperation(Summary = "Delete a batch")]
+        [HttpDelete("api/v1/{name}")]
+        [SwaggerOperation(Summary = "Delete a batch by name")]
         [ProducesResponseType(204)]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string name)
         {
-            await _mediator.Send(new DeleteBatchCommand(id));
+            await _mediator.Send(new DeleteBatchCommand(name));
             return NoContent();
         }
     }

@@ -26,8 +26,9 @@ namespace Corebyte_platform.batch_management.Domain.Model.Aggregates
                 throw new ArgumentOutOfRangeException(nameof(temperature), "Temperature cannot be negative");
             if (total < 0)
                 throw new ArgumentOutOfRangeException(nameof(total), "Total cannot be negative");
-            if (date > DateTime.UtcNow)
-                throw new ArgumentOutOfRangeException(nameof(date), "Date cannot be in the future");
+            // Removed future date validation to allow scheduling batches in advance
+            if (date == default)
+                throw new ArgumentException("Date must be specified", nameof(date));
             if (string.IsNullOrWhiteSpace(nLote))
                 throw new ArgumentException("NLote cannot be null or empty", nameof(nLote));
 

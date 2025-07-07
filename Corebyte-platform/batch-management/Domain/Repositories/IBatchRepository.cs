@@ -7,11 +7,11 @@ namespace Corebyte_platform.batch_management.Domain.Repositories
 {
     public interface IBatchRepository
     {
-        Task<Batch?> GetByIdAsync(Guid id);
+        Task<Batch?> GetByIdAsync(string name);
         Task<IEnumerable<Batch>> ListAsync();
         Task AddAsync(Batch batch);
         Task UpdateAsync(Batch batch);
-        Task DeleteAsync(Guid id);
+        Task DeleteAsync(string name);
     }
 }
 

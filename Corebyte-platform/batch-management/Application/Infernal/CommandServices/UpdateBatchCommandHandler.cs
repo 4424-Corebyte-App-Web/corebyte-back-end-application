@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Corebyte_platform.batch_management.Domain.Repositories;
+using Corebyte_platform.batch_management.Domain.Model.Aggregates;
 
 namespace Corebyte_platform.batch_management.Application.Infernal.CommandServices
 {
@@ -16,11 +17,23 @@ namespace Corebyte_platform.batch_management.Application.Infernal.CommandService
 
         public async Task<Unit> Handle(UpdateBatchCommand request, CancellationToken cancellationToken)
         {
-            var batch = await _repository.GetByIdAsync(request.Id)
-                ?? throw new KeyNotFoundException($"Batch {request.Id} not found");
-            // map updated fields (assumes Batch has appropriate methods or setters)
-            // batch.UpdateName(request.Name);
-            await _repository.UpdateAsync(batch);
+            var batch = await _repository.GetByIdAsync(request.Name)
+                ?? throw new KeyNotFoundException($"Batch with name '{request.Name}' not found");
+                
+            // Update the batch properties
+            // Note: In a real application, you might want to add validation and business logic here
+            var updatedBatch = new Batch(
+                request.NewName ?? request.Name, // Use new name if provided, otherwise keep the existing name
+                request.Type,
+                request.Status,
+                request.Temperature,
+                request.Amount,
+                request.Total,
+                request.Date,
+                request.NLote
+            );
+            
+            await _repository.UpdateAsync(updatedBatch);
             return Unit.Value;
         }
     }

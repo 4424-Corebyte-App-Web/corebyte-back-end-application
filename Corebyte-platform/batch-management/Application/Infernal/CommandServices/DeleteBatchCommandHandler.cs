@@ -16,7 +16,7 @@ namespace Corebyte_platform.batch_management.Application.Infernal.CommandService
 
         public async Task<Unit> Handle(DeleteBatchCommand request, CancellationToken cancellationToken)
         {
-            await _repository.DeleteAsync(request.Id);
+            await _repository.DeleteAsync(request.Name);
             return Unit.Value;
         }
     }

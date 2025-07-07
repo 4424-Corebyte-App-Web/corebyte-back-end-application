@@ -4,7 +4,7 @@ using Corebyte_platform.batch_management.Interfaces.REST.Resources;
 
 namespace Corebyte_platform.batch_management.Application.Infernal.QueryServices
 {
-    public record GetBatchByIdQuery(Guid Id) : IRequest<BatchResource>;
+    public record GetBatchByIdQuery(String Name) : IRequest<BatchResource>;
 }
 
 
