@@ -64,6 +64,9 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
             builder.Entity<Order>().Property(o => o.Product).IsRequired().HasMaxLength(100);
             builder.Entity<Order>().Property(o => o.Amount).IsRequired();
             builder.Entity<Order>().Property(o => o.Total).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Entity<Order>().Property(o => o.Url).IsRequired().HasMaxLength(100);
+
+
 
             //Configuration of the entity Batch
             builder.Entity<Batch>().HasKey(b => b.Id);

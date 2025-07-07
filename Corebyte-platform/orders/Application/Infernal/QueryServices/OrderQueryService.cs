@@ -51,6 +51,18 @@ namespace Corebyte_platform.orders.Application.Infernal.QueryServices
         }
 
         /// <summary>
+        /// Retrieves an order based on the specified URL.
+        /// </summary>
+        /// <param name="query">The GetOrderByUrlQuery query</param>
+        /// <returns>An order object</returns>
+
+        public async Task<Order?> Handle(GetOrderByUrlQuery query)
+        {
+            return await orderRepository.FindByUrl(query.url);
+        }
+
+
+        /// <summary>
         /// 
         public async Task<IEnumerable<Order>> Handle(GetOrderByIdQuery query)
         {
