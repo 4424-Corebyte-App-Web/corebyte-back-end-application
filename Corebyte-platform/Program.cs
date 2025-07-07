@@ -14,6 +14,19 @@ using Corebyte_platform.batch_management.Application.Infernal.CommandServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS policy for frontend local dev
+const string AllowFrontendDev = "AllowFrontendDev";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowFrontendDev,
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 // Configure Lower Case URLs
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -83,6 +96,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors(AllowFrontendDev);
 
 app.UseAuthorization();
 

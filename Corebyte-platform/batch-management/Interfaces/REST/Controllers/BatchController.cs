@@ -43,8 +43,18 @@ namespace Corebyte_platform.batch_management.Interfaces.REST.Controllers
         [HttpPost]
         [SwaggerOperation(Summary = "Create a new batch")]
         [ProducesResponseType(typeof(Guid), 201)]
-        public async Task<IActionResult> Create([FromBody] CreateBatchCommand cmd)
+        public async Task<IActionResult> Create([FromBody] CreateBatchDto dto)
         {
+            var cmd = new CreateBatchCommand(
+                dto.Name,
+                dto.Type,
+                dto.Status,
+                dto.Temperature,
+                dto.Amount,
+                dto.Total,
+                dto.Date,
+                dto.NLote
+            );
             var id = await _mediator.Send(cmd);
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
@@ -53,9 +63,19 @@ namespace Corebyte_platform.batch_management.Interfaces.REST.Controllers
         [SwaggerOperation(Summary = "Update an existing batch")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateBatchCommand cmd)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateBatchDto dto)
         {
-            if (id != cmd.Id) return BadRequest();
+            var cmd = new UpdateBatchCommand(
+                id,
+                dto.Name,
+                dto.Type,
+                dto.Status,
+                dto.Temperature,
+                dto.Amount,
+                dto.Total,
+                dto.Date,
+                dto.NLote
+            );
             await _mediator.Send(cmd);
             return NoContent();
         }
