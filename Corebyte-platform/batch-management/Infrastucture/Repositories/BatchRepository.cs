@@ -35,22 +35,18 @@ namespace Corebyte_platform.batch_management.Infrastucture.Repositories
 
         public async Task UpdateAsync(Batch batch)
         {
-            // First, get the existing entity from the database
-            var existingBatch = await _context.Batches
-                .AsNoTracking()
-                .FirstOrDefaultAsync(b => b.Name == batch.Name);
+            // Check if the entity is already being tracked
+            var existingEntity = _context.ChangeTracker.Entries<Batch>()
+                .FirstOrDefault(e => e.Entity.Name == batch.Name)?.Entity;
 
-            if (existingBatch != null)
+            if (existingEntity != null)
             {
-                // If the entity exists, update its properties
-                _context.Entry(existingBatch).CurrentValues.SetValues(batch);
-                _context.Entry(existingBatch).State = EntityState.Modified;
+                // If the entity is already being tracked, detach it first
+                _context.Entry(existingEntity).State = EntityState.Detached;
             }
-            else
-            {
-                // If it's a new entity, add it
-                await _context.Batches.AddAsync(batch);
-            }
+
+            // Attach the entity and mark it as modified
+            _context.Batches.Update(batch);
 
             try
             {
