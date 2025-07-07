@@ -113,31 +113,30 @@
         /// <returns>
         /// 
         [HttpDelete("{id}")]
-            [SwaggerOperation(
-                Summary = "Deletes an order by ID",
-                Description = "Deletes the specified order if it exists",
-                OperationId = "DeleteOrderById")]
-            [SwaggerResponse(200, "Order was successfully deleted", typeof(OrderResource))]
-            [SwaggerResponse(404, "No order found for the ID")]
-            public async Task<IActionResult> DeleteOrders([FromBody] DeleteOrderResource resource)
-            {
-
-                var deleteOrderCommand = DeleteOrderCommandFromResourceAssembler.ToCommandFromResource(resource);
-            try
-                {
-                    var order = await orderCommandService.Handle(deleteOrderCommand);
-                    if (order is null)
-                    {
-                        return NotFound(new { message = "No order found with the specified ID" });
-                    }
-                    var orderResource = OrderResourceFromEntityAssembler.ToResourceFromEntity(order);
-                    return Ok(orderResource);
-                }
-                catch (Exception)
-                {
-                    return StatusCode(500, new { message = "An error occurred while deleting the order" });
-                }
-            }
+[SwaggerOperation(
+    Summary = "Deletes an order by ID",
+    Description = "Deletes the specified order if it exists",
+    OperationId = "DeleteOrderById")]
+[SwaggerResponse(200, "Order was successfully deleted", typeof(OrderResource))]
+[SwaggerResponse(404, "No order found for the ID")]
+public async Task<IActionResult> DeleteOrders(int id)
+{
+    try
+    {
+        var deleteOrderCommand = new DeleteOrdersByIdCommand(id);
+        var order = await orderCommandService.Handle(deleteOrderCommand);
+        if (order is null)
+        {
+            return NotFound(new { message = "No order found with the specified ID" });
+        }
+        var orderResource = OrderResourceFromEntityAssembler.ToResourceFromEntity(order);
+        return Ok(orderResource);
+    }
+    catch (Exception)
+    {
+        return StatusCode(500, new { message = "An error occurred while deleting the order" });
+    }
+}
 
 
         /// <summary>
