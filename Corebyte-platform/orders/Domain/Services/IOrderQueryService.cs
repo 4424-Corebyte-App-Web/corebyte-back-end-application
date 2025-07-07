@@ -40,6 +40,6 @@ namespace Corebyte_platform.orders.Domain.Services
         /// <param name="query">The GetOrderByAmountAndTotalQuery query</param>
         /// <returns>The Order object if found, or null otherwise</returns>
         Task<Order?> Handle(GetOrderByAmountAndTotalQuery query);
-      
+
     }
 }

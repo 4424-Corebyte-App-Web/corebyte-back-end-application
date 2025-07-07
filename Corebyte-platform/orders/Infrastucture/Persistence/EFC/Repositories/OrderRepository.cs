@@ -1,5 +1,6 @@
 ﻿using Corebyte_platform.orders.Domain.Model.Aggregates;
 using Corebyte_platform.orders.Domain.Model.Commands;
+using Corebyte_platform.orders.Domain.Model.ValueObjects;
 using Corebyte_platform.orders.Domain.Repositories;
 using Corebyte_platform.Shared.Domain.Repositories;
 using Corebyte_platform.Shared.Infrastructure.Persistence.EFC.Repositories;
@@ -16,6 +17,13 @@ namespace Corebyte_platform.orders.Infrastucture.Persistence.EFC.Repositories
     /// 
     public class OrderRepository(AppDbContext context) : BaseRepository<Order>(context), IOrderRepository
     {
+
+
+        public async Task<Order?> FindByUrl(string url)
+        {
+            return await Context.Set<Order>().Where(o => o.Url == url).FirstOrDefaultAsync();
+        }
+
         /// <summary>
         /// Finds all orders for the given customer.
         /// </summary>
@@ -36,7 +44,11 @@ namespace Corebyte_platform.orders.Infrastucture.Persistence.EFC.Repositories
         /// 
         public async Task<Order?> FindByProductAsync(string product)
         {
-            return await Context.Set<Order>().FirstOrDefaultAsync(o => o.Product == product);
+            if (Enum.TryParse<Products>(product, true, out var productEnum))
+            {
+                return await Context.Set<Order>().FirstOrDefaultAsync(o => o.Product == productEnum);
+            }
+            return null;
         }
 
         /// <summary>
@@ -62,8 +74,8 @@ namespace Corebyte_platform.orders.Infrastucture.Persistence.EFC.Repositories
         {
             return await Context.Set<Order>()
                 .FirstOrDefaultAsync(o => o.Customer == command.customer &&
-                                          o.Product == command.product &&
-                                          o.Date == command.date);
+                                      o.Product == command.product &&
+                                      o.Date == command.date);
         }
 
         /// <summary>
@@ -77,9 +89,14 @@ namespace Corebyte_platform.orders.Infrastucture.Persistence.EFC.Repositories
         /// 
         public async Task<Order?> FindByDetailsExceptIdAsync(int id, string customer, string product, DateTime date)
         {
+            if (!Enum.TryParse<Products>(product, true, out var productEnum))
+            {
+                return null;
+            }
+
             return await Context.Set<Order>()
                 .FirstOrDefaultAsync(o => o.Id != id && o.Customer == customer &&
-                                          o.Product == product && o.Date == date);
+                                      o.Product == productEnum && o.Date == date);
         }
 
         /// <summary>
@@ -89,8 +106,8 @@ namespace Corebyte_platform.orders.Infrastucture.Persistence.EFC.Repositories
         /// <returns>The number of rows affected</returns>
         public async Task<int> DeleteByIdAsync(int id)
         {
-            var orders= await Context.Set<Order>().Where(o => o.Id == id).ToListAsync();
-            if(!orders.Any())
+            var orders = await Context.Set<Order>().Where(o => o.Id == id).ToListAsync();
+            if (!orders.Any())
             {
                 return 0; // No orders found with the given id
             }
@@ -98,7 +115,7 @@ namespace Corebyte_platform.orders.Infrastucture.Persistence.EFC.Repositories
             await Context.SaveChangesAsync();
             return orders.Count; // Return the number of deleted orders
         }
-       
+
 
     }
 }

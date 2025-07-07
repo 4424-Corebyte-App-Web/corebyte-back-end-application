@@ -1,6 +1,6 @@
 ﻿using Corebyte_platform.orders.Domain.Model.Aggregates;
 using Corebyte_platform.orders.Domain.Model.Commands;
-using Corebyte_platform.Shared.Domain.Repositories; 
+using Corebyte_platform.Shared.Domain.Repositories;
 
 
 namespace Corebyte_platform.orders.Domain.Repositories
@@ -15,6 +15,7 @@ namespace Corebyte_platform.orders.Domain.Repositories
         Task<IEnumerable<Order>> FindByCustomerAsync(string customer);
         Task<Order?> FindByProductAsync(string product);
         Task<Order?> FindByAmountAndTotalAsync(int amount, double total);
+        Task<Order?> FindByUrl(string url);
 
 
         /// <summary>
@@ -44,6 +45,6 @@ namespace Corebyte_platform.orders.Domain.Repositories
         Task<Order?> FindByDetailsExceptIdAsync(int id, string customer, string product, DateTime date);
 
 
-    
+
     }
 }

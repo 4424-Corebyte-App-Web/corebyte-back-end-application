@@ -9,7 +9,7 @@
     /// <param name="product">The product</param>
     /// <param name="amount">The amount</param>
     /// <param name="total">The total</param>
-    public record OrderResource(int Id, string customer, DateTime date, string product, int amount, double total);
-    
-    
+    public record OrderResource(int Id, string customer, DateTime date, string product, int amount, double total, string url);
+
+
 }

@@ -27,6 +27,6 @@ namespace Corebyte_platform.orders.Domain.Services
         /// <param name="command">The delete command containing the id identifier</param>
         /// <returns>The number of records deleted</returns>
         Task<Order> Handle(DeleteOrdersByIdCommand command);
-       
+
     }
 }

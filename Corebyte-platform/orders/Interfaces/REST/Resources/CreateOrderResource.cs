@@ -9,6 +9,6 @@
     /// <param name="amount">The amount</param>"
     /// <param name="total">The total</param>"
     /// 
-    public record CreateOrderResource(string customer, DateTime date, string product, int amount, double total);
-    
+    public record CreateOrderResource(string customer, DateTime date, string product, int amount, double total, string url);
+
 }

@@ -11,7 +11,7 @@ namespace Corebyte_platform.orders.Application.Infernal.QueryServices
     /// </summary>
     /// <param name="orderRepository">The order repository</param>"
     /// 
-    public class OrderQueryService(IOrderRepository orderRepository): IOrderQueryService
+    public class OrderQueryService(IOrderRepository orderRepository) : IOrderQueryService
     {
         /// <summary>
         ///     Gets all orders.
@@ -49,6 +49,18 @@ namespace Corebyte_platform.orders.Application.Infernal.QueryServices
         {
             return await orderRepository.FindByAmountAndTotalAsync(query.amount, query.total);
         }
+
+        /// <summary>
+        /// Retrieves an order based on the specified URL.
+        /// </summary>
+        /// <param name="query">The GetOrderByUrlQuery query</param>
+        /// <returns>An order object</returns>
+
+        public async Task<Order?> Handle(GetOrderByUrlQuery query)
+        {
+            return await orderRepository.FindByUrl(query.url);
+        }
+
 
         /// <summary>
         /// 

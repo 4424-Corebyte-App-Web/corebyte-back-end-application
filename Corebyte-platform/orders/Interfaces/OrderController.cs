@@ -38,40 +38,40 @@
             var query = new GetAllOrdersQuery();
             var orders = await orderQueryService.Handle(query);
             if (!orders.Any())
-            
+
                 return NoContent();
 
-                var resources = orders.Select(OrderResourceFromEntityAssembler.ToResourceFromEntity);
-                return Ok(resources);
-            
+            var resources = orders.Select(OrderResourceFromEntityAssembler.ToResourceFromEntity);
+            return Ok(resources);
+
         }
 
-            // POST: Create Order
-            [HttpPost]
-            [SwaggerOperation(
-                Summary = "Creates an order",
-                Description = "Creates a new order with customer, product, quantity, total, etc.",
-                OperationId = "CreateOrder")]
-            [SwaggerResponse(201, "The order was created", typeof(OrderResource))]
-            [SwaggerResponse(400, "The order was not created")]
-            [SwaggerResponse(409, "An order with the same details already exists")]
-            public async Task<ActionResult> CreateOrder([FromBody] CreateOrderResource resource)
+        // POST: Create Order
+        [HttpPost]
+        [SwaggerOperation(
+            Summary = "Creates an order",
+            Description = "Creates a new order with customer, product, quantity, total, etc.",
+            OperationId = "CreateOrder")]
+        [SwaggerResponse(201, "The order was created", typeof(OrderResource))]
+        [SwaggerResponse(400, "The order was not created")]
+        [SwaggerResponse(409, "An order with the same details already exists")]
+        public async Task<ActionResult> CreateOrder([FromBody] CreateOrderResource resource)
+        {
+            try
             {
-                try
-                {
-                    var createOrderCommand = CreateOrderCommandFromResourceAssembler.ToCommandFromResource(resource);
-                    var result = await orderCommandService.Handle(createOrderCommand);
-                    return CreatedAtAction(nameof(GetOrderById), new { id = result.Id }, OrderResourceFromEntityAssembler.ToResourceFromEntity(result));
-                }
-                catch (DuplicateOrderException ex)
-                {
-                    return Conflict(new { message = ex.Message });
-                }
-                catch (Exception)
-                {
-                    return BadRequest("The order was not created");
-                }
+                var createOrderCommand = CreateOrderCommandFromResourceAssembler.ToCommandFromResource(resource);
+                var result = await orderCommandService.Handle(createOrderCommand);
+                return CreatedAtAction(nameof(GetOrderById), new { id = result.Id }, OrderResourceFromEntityAssembler.ToResourceFromEntity(result));
             }
+            catch (DuplicateOrderException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest("The order was not created");
+            }
+        }
 
 
 
@@ -113,31 +113,30 @@
         /// <returns>
         /// 
         [HttpDelete("{id}")]
-            [SwaggerOperation(
-                Summary = "Deletes an order by ID",
-                Description = "Deletes the specified order if it exists",
-                OperationId = "DeleteOrderById")]
-            [SwaggerResponse(200, "Order was successfully deleted", typeof(OrderResource))]
-            [SwaggerResponse(404, "No order found for the ID")]
-            public async Task<IActionResult> DeleteOrders([FromBody] DeleteOrderResource resource)
-            {
-
-                var deleteOrderCommand = DeleteOrderCommandFromResourceAssembler.ToCommandFromResource(resource);
+        [SwaggerOperation(
+    Summary = "Deletes an order by ID",
+    Description = "Deletes the specified order if it exists",
+    OperationId = "DeleteOrderById")]
+        [SwaggerResponse(200, "Order was successfully deleted", typeof(OrderResource))]
+        [SwaggerResponse(404, "No order found for the ID")]
+        public async Task<IActionResult> DeleteOrders(int id)
+        {
             try
+            {
+                var deleteOrderCommand = new DeleteOrdersByIdCommand(id);
+                var order = await orderCommandService.Handle(deleteOrderCommand);
+                if (order is null)
                 {
-                    var order = await orderCommandService.Handle(deleteOrderCommand);
-                    if (order is null)
-                    {
-                        return NotFound(new { message = "No order found with the specified ID" });
-                    }
-                    var orderResource = OrderResourceFromEntityAssembler.ToResourceFromEntity(order);
-                    return Ok(orderResource);
+                    return NotFound(new { message = "No order found with the specified ID" });
                 }
-                catch (Exception)
-                {
-                    return StatusCode(500, new { message = "An error occurred while deleting the order" });
-                }
+                var orderResource = OrderResourceFromEntityAssembler.ToResourceFromEntity(order);
+                return Ok(orderResource);
             }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "An error occurred while deleting the order" });
+            }
+        }
 
 
         /// <summary>
@@ -181,14 +180,14 @@
             var order = await orderQueryService.Handle(OrderByProductQuery);
             if (order is null)
             {
-                return NotFound("No order found for the specified product" );
+                return NotFound("No order found for the specified product");
             }
             var resource = OrderResourceFromEntityAssembler.ToResourceFromEntity(order);
             return Ok(resource);
 
 
         }
-       
+
 
         /// <summary>
         /// Gets an order by amount and total.

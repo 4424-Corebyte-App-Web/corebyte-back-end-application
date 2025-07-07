@@ -3,7 +3,7 @@ using Corebyte_platform.orders.Interfaces.REST.Resources;
 
 namespace Corebyte_platform.orders.Interfaces.REST.Transform
 {
-    
+
     public static class OrderResourceFromEntityAssembler
     {
         /// <summary>
@@ -15,8 +15,8 @@ namespace Corebyte_platform.orders.Interfaces.REST.Transform
         /// </returns>
         /// 
 
-        public static OrderResource ToResourceFromEntity(Order entity) => 
-            new OrderResource(entity.Id, entity.Customer, entity.Date, entity.Product, entity.Amount, entity.Total);
+        public static OrderResource ToResourceFromEntity(Order entity) =>
+            new OrderResource(entity.Id, entity.Customer, entity.Date, entity.Product.ToString(), entity.Amount, entity.Total, entity.Url);
 
         /// <summary>
         /// Converts a collection of Order entities to a collection of OrderResource objects
@@ -29,11 +29,12 @@ namespace Corebyte_platform.orders.Interfaces.REST.Transform
 
         internal static IEnumerable<OrderResource> ToResourceFromEntity(IEnumerable<Order> orders) =>
             orders.Select(order => new OrderResource(
-                order.Id, 
-                order.Customer, 
-                order.Date, 
-                order.Product, 
-                order.Amount, 
-                order.Total));
+                order.Id,
+                order.Customer,
+                order.Date,
+                order.Product.ToString(),
+                order.Amount,
+                order.Total,
+                order.Url));
     }
 }
