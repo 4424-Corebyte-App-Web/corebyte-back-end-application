@@ -3,7 +3,6 @@ using Corebyte_platform.Replenishment.Domain.Model.ValueObjects;
 namespace Corebyte_platform.Replenishment.Domain.Model.Commands;
 
 public record CreateReplenishmentCommand( 
-    string OrderNumber,
     string Name,
     string Type,
     string Date,

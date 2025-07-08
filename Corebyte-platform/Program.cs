@@ -59,7 +59,20 @@ builder.Services.AddScoped<IReplenishmentQueryService, ReplenishmentQueryService
 
 //===================================== End Oscar bounded Context ===============================
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirFrontendDev", policy =>
+    {
+        policy
+            .AllowAnyOrigin()    
+            .AllowAnyHeader()     
+            .AllowAnyMethod();    
+    });
+});
+
+
 var app = builder.Build();
+
 
 //==================== Verify if the database exists and create it if it doesn't ===================
 using (var scope = app.Services.CreateScope())
@@ -71,6 +84,7 @@ using (var scope = app.Services.CreateScope())
 //===============================================================================================
 
 // Configure the HTTP request pipeline.
+app.UseCors("PermitirFrontendDev"); // <- Importante: debe ir antes de app.UseAuthorization()
 
     app.UseSwagger();
     app.UseSwaggerUI();

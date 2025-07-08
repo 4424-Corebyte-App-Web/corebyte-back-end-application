@@ -8,7 +8,6 @@ public static class CreateReplenishmentCommandFromResourceAssembler
     public static CreateReplenishmentCommand ToCommandFromResource(CreateReplenishmentResource resource)
     {
         return new CreateReplenishmentCommand(
-            resource.OrderNumber,
             resource.Name,
             resource.Type,
             resource.Date,

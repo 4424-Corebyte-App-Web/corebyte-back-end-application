@@ -12,7 +12,6 @@ public static class ReplenishmentResourceFromEntityAssembler
             entity.Name,
             entity.Type,
             entity.Date,
-            entity.OrderNumber,
             entity.StockActual,
             entity.StockMinimo,
             entity.Price

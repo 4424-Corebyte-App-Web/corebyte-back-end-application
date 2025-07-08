@@ -28,7 +28,7 @@
             // Oscar
             builder.Entity<Replenishment>().HasKey(b=> b.Id);
             builder.Entity<Replenishment>().Property(b => b.Id).ValueGeneratedOnAdd();
-            builder.Entity<Replenishment>().Property(b => b.OrderNumber).IsRequired();
+            builder.Entity<Replenishment>().Property(b => b.OrderNumber);
             builder.Entity<Replenishment>().Property(b => b.Name).IsRequired().HasMaxLength(100);
             builder.Entity<Replenishment>().Property(b => b.Type).IsRequired().HasMaxLength(50);
             builder.Entity<Replenishment>().Property(b => b.Date).IsRequired();
