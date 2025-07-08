@@ -21,7 +21,7 @@ public class Replenishment
         this.Type = string.Empty;
         this.Date = string.Empty;
         this.Price = 0;
-        this.OrderNumber = string.Empty;
+        this.OrderNumber = "LIMA-0000";
         this.StockActual = 0;
         this.StockMinimo = 0;
         
@@ -34,7 +34,6 @@ public class Replenishment
         Name = requestsCommand.Name;
         Type = requestsCommand.Type;
         Date = requestsCommand.Date;
-        OrderNumber = requestsCommand.OrderNumber;
         StockActual = requestsCommand.StockActual;
         StockMinimo = requestsCommand.StockMinimo;
         Price = requestsCommand.Price;

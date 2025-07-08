@@ -93,7 +93,7 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
             //Configuration of the entity Replenishment
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().HasKey(b=> b.Id);
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Id).ValueGeneratedOnAdd();
-            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.OrderNumber).IsRequired();
+            builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.OrderNumber);
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Name).IsRequired().HasMaxLength(100);
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Type).IsRequired().HasMaxLength(50);
             builder.Entity<replenishment.Domain.Model.Aggregate.Replenishment>().Property(b => b.Date).IsRequired();

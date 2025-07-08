@@ -4,7 +4,6 @@
 ///  Resource to create in replenishment
 /// </summary>
 /*
- * string OrderNumber,
     string Name,
     string Type,
     string Date,
@@ -15,7 +14,6 @@
 /// 
 /// 
 public record CreateReplenishmentResource(
-    string OrderNumber,
     string Name,
     string Type,
     string Date,

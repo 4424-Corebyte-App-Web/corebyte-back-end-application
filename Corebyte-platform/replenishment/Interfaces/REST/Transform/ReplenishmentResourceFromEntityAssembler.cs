@@ -10,7 +10,6 @@ public static class ReplenishmentResourceFromEntityAssembler
         return new ReplenishmentResource
         (
             entity.Id,
-            entity.OrderNumber,
             entity.Name,
             entity.Type,
             entity.Date,
@@ -25,7 +24,6 @@ public static class ReplenishmentResourceFromEntityAssembler
         return new ReplenishmentResource
         (
             0, // ID will be set by the database
-            resource.OrderNumber,
             resource.Name,
             resource.Type,
             resource.Date,

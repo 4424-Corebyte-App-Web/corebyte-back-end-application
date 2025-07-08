@@ -2,7 +2,6 @@
 
 public record ReplenishmentResource(
     int Id,
-    string OrderNumber,
     string Name,
     string Type,
     string Date,
