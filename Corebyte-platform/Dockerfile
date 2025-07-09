@@ -2,13 +2,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy solution and project files
-COPY ["Corebyte-platform.sln", "./"]
+# Copy project file
 COPY ["Corebyte-platform.csproj", "./"]
 
 # Restore packages
 RUN echo "=== RESTORING PACKAGES ===" && \
-    dotnet restore "Corebyte-platform.sln"
+    dotnet restore "Corebyte-platform.csproj"
 
 # Copy remaining source code
 COPY . .
@@ -21,7 +20,7 @@ RUN echo "=== BUILDING AND PUBLISHING ===" && \
     --runtime linux-x64
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 
 # Copy published app
