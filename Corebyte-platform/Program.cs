@@ -52,6 +52,7 @@ using Corebyte_platform.IAM.Interfaces.ACL;
 using Cortex.Mediator.Commands;
 using Cortex.Mediator.Behaviors;
 using Cortex.Mediator.DependencyInjection;
+// Cortex.Mediator references removed as they might conflict with MediatR
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -141,7 +142,9 @@ builder.Services.AddDbContext<BatchContext>(options =>
     options.UseMySQL(connectionString));
 builder.Services.AddScoped<IBatchRepository, BatchRepository>();
 builder.Services.AddScoped<BatchService>();
-builder.Services.AddMediatR(typeof(CreateBatchCommand));
+// Register MediatR with the assembly containing your commands/handlers
+builder.Services.AddMediatR(cfg => 
+    cfg.RegisterServicesFromAssembly(typeof(CreateBatchCommand).Assembly));
 
 // replenishment bounded context DI
 builder.Services.AddScoped<IReplenishmentRepository, ReplenishmentRepository>();
@@ -276,7 +279,17 @@ catch (Exception ex)
     }
     // Continue execution to show error in the API
 }
-
+// En Program.cs, asegúrate de tener:
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
+}
+builder.Configuration.GetConnectionString("DefaultConnection");
 // Authentication & Authorization Middleware
 app.UseAuthentication();
 app.UseAuthorization();
@@ -293,4 +306,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 app.Run();
+
+
+
+
+
