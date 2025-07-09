@@ -5,7 +5,7 @@ using Corebyte_platform.batch_management.Domain.Repositories;
 
 namespace Corebyte_platform.batch_management.Application.Infernal.CommandServices
 {
-    public class DeleteBatchCommandHandler : IRequestHandler<DeleteBatchCommand>
+    public class DeleteBatchCommandHandler : IRequestHandler<DeleteBatchCommand, Unit>
     {
         private readonly IBatchRepository _repository;
 
@@ -14,7 +14,7 @@ namespace Corebyte_platform.batch_management.Application.Infernal.CommandService
             _repository = repository;
         }
 
-        public async Task<Unit> Handle(DeleteBatchCommand request, CancellationToken cancellationToken)
+        async Task<Unit> IRequestHandler<DeleteBatchCommand, Unit>.Handle(DeleteBatchCommand request, CancellationToken cancellationToken)
         {
             await _repository.DeleteAsync(request.Name);
             return Unit.Value;

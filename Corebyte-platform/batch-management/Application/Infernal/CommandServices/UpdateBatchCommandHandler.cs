@@ -6,7 +6,7 @@ using Corebyte_platform.batch_management.Domain.Model.Aggregates;
 
 namespace Corebyte_platform.batch_management.Application.Infernal.CommandServices
 {
-    public class UpdateBatchCommandHandler : IRequestHandler<UpdateBatchCommand>
+    public class UpdateBatchCommandHandler : IRequestHandler<UpdateBatchCommand, Unit>
     {
         private readonly IBatchRepository _repository;
 
@@ -15,7 +15,7 @@ namespace Corebyte_platform.batch_management.Application.Infernal.CommandService
             _repository = repository;
         }
 
-        public async Task<Unit> Handle(UpdateBatchCommand request, CancellationToken cancellationToken)
+        async Task<Unit> IRequestHandler<UpdateBatchCommand, Unit>.Handle(UpdateBatchCommand request, CancellationToken cancellationToken)
         {
             var batch = await _repository.GetByIdAsync(request.Name)
                 ?? throw new KeyNotFoundException($"Batch with name '{request.Name}' not found");

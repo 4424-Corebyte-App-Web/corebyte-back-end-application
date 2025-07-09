@@ -17,8 +17,8 @@ namespace Corebyte_platform.Shared.Infrastructure.Mediator.Cortex.Configuration
 
         public async Task<TResponse> Handle(
             TRequest request,
-            CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
+            RequestHandlerDelegate<TResponse> next,
+            CancellationToken cancellationToken)
         {
             var requestName = typeof(TRequest).Name;
             _logger.LogInformation("Handling {RequestName}", requestName);

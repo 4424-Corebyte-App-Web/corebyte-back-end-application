@@ -13,7 +13,7 @@ namespace Corebyte_platform.batch_management.Application.Infernal.CommandService
         decimal Total,
         DateTime Date,
         string NLote
-    ) : IRequest;
+    ) : IRequest<Unit>;
 }
 
 
