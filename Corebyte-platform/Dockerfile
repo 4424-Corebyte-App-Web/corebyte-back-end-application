@@ -2,48 +2,30 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Show directory structure for debugging
-RUN pwd && ls -la
-
-# Copy project file
+# Copy solution and project files
+COPY ["Corebyte-platform.sln", "./"]
 COPY ["Corebyte-platform.csproj", "./"]
 
-# Check if file was copied
-RUN echo "Checking if project file exists..." && \
-    if [ ! -f "Corebyte-platform.csproj" ]; then \
-        echo "ERROR: Project file not found!"; \
-        ls -la; \
-        exit 1; \
-    fi
+# Restore packages
+RUN echo "=== RESTORING PACKAGES ===" && \
+    dotnet restore "Corebyte-platform.sln"
 
-# Restore with detailed output
-RUN echo "=== DOTNET INFO ===" && \
-    dotnet --info && \
-    echo "=== RESTORING PACKAGES ===" && \
-    dotnet restore "Corebyte-platform.csproj" -v n || (echo "=== RESTORE FAILED ===" && exit 1)
-
-# Copy remaining files
+# Copy remaining source code
 COPY . .
 
-# Build with detailed output
-RUN echo "=== BUILDING APPLICATION ===" && \
-    dotnet build "Corebyte-platform.csproj" -c Release -o /app/build --no-restore -v n || (echo "=== BUILD FAILED ===" && exit 1)
+# Build and publish
+RUN echo "=== BUILDING AND PUBLISHING ===" && \
+    dotnet publish "Corebyte-platform.csproj" -c Release -o /app/publish \
+    --no-restore \
+    --no-self-contained \
+    --runtime linux-x64
 
-# Publish stage
-FROM build AS publish
-RUN echo "=== PUBLISHING APPLICATION ===" && \
-    dotnet publish "Corebyte-platform.csproj" -c Release -o /app/publish --no-restore --no-build -v n || (echo "=== PUBLISH FAILED ===" && exit 1)
-
-# Final stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
-# Copy published output
-COPY --from=publish /app/publish .
-
-# Verify files were copied
-RUN echo "=== PUBLISHED FILES ===" && \
-    ls -la
+# Copy published app
+COPY --from=build /app/publish .
 
 # Set the entry point
 ENTRYPOINT ["dotnet", "Corebyte-platform.dll"]
