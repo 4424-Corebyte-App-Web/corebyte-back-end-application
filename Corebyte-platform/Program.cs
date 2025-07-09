@@ -71,11 +71,14 @@ else
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost",
-        builder => builder
-            .WithOrigins("http://localhost:5173")
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    options.AddPolicy("VueCorsPolicy", policy =>
+    {
+        policy
+          .WithOrigins("http://localhost:5173")  // Origen exacto
+          .AllowAnyMethod()
+          .AllowAnyHeader()
+          .AllowCredentials();                  // <-- Aquí permites credenciales
+    });
 });
 
 // Configure Lower Case URLs
@@ -288,7 +291,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
     endpoints.MapGet("/", () => "API is running!");
 });
-app.UseCors("AllowLocalhost");
+app.UseCors("VueCorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
