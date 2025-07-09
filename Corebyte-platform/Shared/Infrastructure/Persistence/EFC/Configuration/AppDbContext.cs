@@ -51,8 +51,8 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
                 entity.Property(h => h.customer).IsRequired().HasMaxLength(100);
                 entity.Property(h => h.date).IsRequired();
                 entity.Property(h => h.product).IsRequired().HasMaxLength(100);
-                entity.Property(h => h.amount).IsRequired().HasColumnType("int(3)");
-                entity.Property(h => h.total).IsRequired().HasColumnType("double(18,2)");
+                entity.Property(h => h.amount).IsRequired().HasColumnType("int");
+                entity.Property(h => h.total).IsRequired().HasColumnType("decimal(18,2)");
                 entity.Property(h => h.status)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -66,7 +66,7 @@ namespace Corebyte_platform.Shared.Infrastucture.Persistence.EFC.Configuration
             builder.Entity<Record>().Property(r => r.type).IsRequired().HasMaxLength(100);
             builder.Entity<Record>().Property(r => r.year).IsRequired();
             builder.Entity<Record>().Property(r => r.product).IsRequired().HasMaxLength(100);
-            builder.Entity<Record>().Property(r => r.batch).IsRequired().HasColumnType("int(3)");
+            builder.Entity<Record>().Property(r => r.batch).IsRequired().HasColumnType("int");
             builder.Entity<Record>().Property(r => r.stock).IsRequired().HasColumnType("int(3)");
             
             // Configuration of the Order entity
