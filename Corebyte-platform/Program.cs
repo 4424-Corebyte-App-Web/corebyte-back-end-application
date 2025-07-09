@@ -67,7 +67,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 // Add services to the container.
-builder.Services.AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -108,10 +107,10 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Order Bounded Context Injection Configuration
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderCommandService, OrderCommandService>();
-builder.Services.AddScoped<IOrderCommandService>(provider => 
+builder.Services.AddScoped<IOrderCommandService>(provider =>
     new OrderCommandService(
         provider.GetRequiredService<IOrderRepository>(),
-        
+
         provider.GetRequiredService<IUnitOfWork>()
     )
 );
@@ -119,7 +118,7 @@ builder.Services.AddScoped<IOrderQueryService, OrderQueryService>();
 
 // History Bounded Context Injection Configuration
 builder.Services.AddScoped<IHistoryRepository, HistoryRepository>();
-builder.Services.AddScoped<IHistoryCommandService>(provider => 
+builder.Services.AddScoped<IHistoryCommandService>(provider =>
     new HistoryCommandService(
         provider.GetRequiredService<IHistoryRepository>(),
         provider.GetRequiredService<IUnitOfWork>()
@@ -129,7 +128,7 @@ builder.Services.AddScoped<IHistoryQueryService, HistoryQueryService>();
 
 // Record Bounded Context Injection Configuration
 builder.Services.AddScoped<IRecordRepository, RecordRepository>();
-builder.Services.AddScoped<IRecordCommandService>(provider => 
+builder.Services.AddScoped<IRecordCommandService>(provider =>
     new RecordCommandService(
         provider.GetRequiredService<IRecordRepository>(),
         provider.GetRequiredService<IUnitOfWork>()
@@ -143,7 +142,7 @@ builder.Services.AddDbContext<BatchContext>(options =>
 builder.Services.AddScoped<IBatchRepository, BatchRepository>();
 builder.Services.AddScoped<BatchService>();
 // Register MediatR with the assembly containing your commands/handlers
-builder.Services.AddMediatR(cfg => 
+builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateBatchCommand).Assembly));
 
 // replenishment bounded context DI
@@ -177,21 +176,23 @@ builder.Services.AddCortexMediator(
         //options.AddDefaultBehaviors();
     });
 
-// Add Controllers from Authentication Bounded Context
-builder.Services.AddControllers()
+// Configure Controllers with KebabCase and include AuthController assembly
+builder.Services
+    .AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()))
     .AddApplicationPart(typeof(Corebyte_platform.authentication.Interfaces.REST.AuthController).Assembly);
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var jwtKey = jwtSettings["Key"];
-var jwtIssuer = jwtSettings["Issuer"] ?? "https://localhost:5001";
-var jwtAudience = jwtSettings["Audience"] ?? "https://localhost:5001";
+var jwtIssuer = jwtSettings["Issuer"] ?? (builder.Environment.IsDevelopment() ? "https://localhost:5001" : null);
+var jwtAudience = jwtSettings["Audience"] ?? (builder.Environment.IsDevelopment() ? "https://localhost:5001" : null);
 
-if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
+// Validate JWT configuration based on environment
+if (string.IsNullOrWhiteSpace(jwtKey))
 {
-    // Generate a secure random key if none is provided (for development only)
     if (builder.Environment.IsDevelopment())
     {
+        // Generate a secure random key for development only
         var keyBytes = new byte[32]; // 256 bits
         using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
         rng.GetBytes(keyBytes);
@@ -200,7 +201,25 @@ if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
     }
     else
     {
-        throw new InvalidOperationException("JWT Key must be at least 32 characters long");
+        throw new InvalidOperationException("JWT Key is required and must be at least 32 characters long in production. Please set the 'Jwt:Key' configuration value.");
+    }
+}
+else if (jwtKey.Length < 32)
+{
+    throw new InvalidOperationException("JWT Key must be at least 32 characters long");
+}
+
+// Validate Issuer and Audience in production
+if (!builder.Environment.IsDevelopment())
+{
+    if (string.IsNullOrWhiteSpace(jwtIssuer) || string.IsNullOrWhiteSpace(jwtAudience))
+    {
+        throw new InvalidOperationException("Both JWT Issuer and Audience must be configured in production. Please set 'Jwt:Issuer' and 'Jwt:Audience' in your production configuration.");
+    }
+    
+    if (jwtIssuer.Contains("localhost") || jwtAudience.Contains("localhost"))
+    {
+        throw new InvalidOperationException("JWT Issuer and Audience cannot contain 'localhost' in production. Please use your production domain.");
     }
 }
 
@@ -222,7 +241,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
         ClockSkew = TimeSpan.Zero // Remove delay of token when expire
     };
-    
+
     // For development: Log token validation errors
     if (builder.Environment.IsDevelopment())
     {
@@ -245,30 +264,16 @@ builder.Services.AddAuthentication(options =>
 // Add Authorization
 builder.Services.AddAuthorization();
 
-var app= builder.Build();
-
-// Verify Database Objects are created
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<AppDbContext>();
-    context.Database.EnsureCreated();
-}
+var app = builder.Build();
 
 // Initialize database on startup
 try
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    
     Console.WriteLine("Verificando base de datos...");
-    
-    // Ensure database exists and apply migrations
     await context.Database.MigrateAsync();
-    
     Console.WriteLine("Base de datos y tablas verificadas.");
-    
-    // Database is now ready to use
 }
 catch (Exception ex)
 {
@@ -277,42 +282,28 @@ catch (Exception ex)
     {
         Console.WriteLine($"Detalles: {ex.InnerException.Message}");
     }
-    // Continue execution to show error in the API
 }
-// En Program.cs, asegúrate de tener:
-if (!app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+else
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
-else
-{
-    app.UseDeveloperExceptionPage();
-}
-builder.Configuration.GetConnectionString("DefaultConnection");
-// Authentication & Authorization Middleware
+
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("VueCorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-
-app.UseCors("VueCorsPolicy");
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.MapControllers();
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
 app.Run();
-
 
 
 
