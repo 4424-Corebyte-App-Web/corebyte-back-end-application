@@ -179,10 +179,10 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(Corebyte_platform.authentication.Interfaces.REST.AuthController).Assembly);
 
 // Configure JWT Authentication
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var jwtKey = jwtSettings["Key"];
-var jwtIssuer = jwtSettings["Issuer"] ?? "https://localhost:5001";
-var jwtAudience = jwtSettings["Audience"] ?? "https://localhost:5001";
+var jwtSettings = builder.Configuration.GetSection("TokenSettings");
+var jwtKey = jwtSettings["Secret"];
+var jwtIssuer = jwtSettings["Issuer"] ?? "corebyte-platform";
+var jwtAudience = jwtSettings["Audience"] ?? "corebyte-platform-users";
 
 if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
 {
