@@ -4,7 +4,7 @@ namespace Corebyte_platform.authentication.Domain.Repositories;
 
 public interface IUserRepository
 {
-    
+
     Task<User> FindByIdAsync(int id);
     Task<User> FindByEmailAsync(string email);
     Task<User> FindByEmailExceptIdAsync(int id, string email);

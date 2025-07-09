@@ -183,9 +183,9 @@ builder.Services
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var jwtKey = jwtSettings["Key"];
-var jwtIssuer = jwtSettings["Issuer"] ?? (builder.Environment.IsDevelopment() ? "https://localhost:5001" : null);
-var jwtAudience = jwtSettings["Audience"] ?? (builder.Environment.IsDevelopment() ? "https://localhost:5001" : null);
+var jwtKey = jwtSettings["1bFjK6g8QhXx5kT8ZrW9e2pL7sN4uV3yB0qE6rT1vX5sQ8zJ2mL4uA7hC9pS6dM3b"];
+var jwtIssuer = jwtSettings["Issuer"] ?? (builder.Environment.IsDevelopment() ? "https://corebytebackendapplication.azurewebsites.net/" : null);
+var jwtAudience = jwtSettings["Audience"] ?? (builder.Environment.IsDevelopment() ? "https://corebytebackendapplication.azurewebsites.net/" : null);
 
 // Validate JWT configuration based on environment
 if (string.IsNullOrWhiteSpace(jwtKey))
