@@ -2,9 +2,16 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore as distinct layers
+# Copy only the project file first to leverage Docker cache
 COPY ["Corebyte-platform.csproj", "./"]
-RUN dotnet restore "Corebyte-platform.csproj"
+
+# Print .NET version and list files for debugging
+RUN dotnet --version && \
+    dotnet --list-sdks && \
+    ls -la
+
+# Restore with detailed diagnostics
+RUN dotnet restore "Corebyte-platform.csproj" --verbosity detailed
 
 # Copy everything else and build
 COPY . .
