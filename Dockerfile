@@ -2,10 +2,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers
+# Copy solution and project files
 COPY *.sln .
-COPY Corebyte-platform/*.csproj ./Corebyte-platform/
-RUN dotnet restore
+COPY Corebyte-platform/Corebyte-platform.csproj ./Corebyte-platform/
+RUN dotnet restore Corebyte-platform/Corebyte-platform.csproj
 
 # Copy everything else and build
 COPY . .
