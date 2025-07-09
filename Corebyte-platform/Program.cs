@@ -55,12 +55,27 @@ using Cortex.Mediator.DependencyInjection;
 // Cortex.Mediator references removed as they might conflict with MediatR
 
 var builder = WebApplication.CreateBuilder(args);
+if (builder.Environment.IsDevelopment())
+{
+    builder.WebHost.UseUrls("http://localhost:5000", "https://localhost:5001");
+}
+else
+{
+    var httpPort = Environment.GetEnvironmentVariable("HTTP_PLATFORM_PORT") ?? "5000";
+    var httpsPort = Environment.GetEnvironmentVariable("HTTPS_PORT") ?? "5001";
+    builder.WebHost.UseUrls(
+        $"http://*:{httpPort}",
+        $"https://*:{httpsPort}"
+    );
+}
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("VueCorsPolicy", policy =>
-    {
-        policy.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader();
-    });
+    options.AddPolicy("AllowLocalhost",
+        builder => builder
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
 // Configure Lower Case URLs
@@ -151,7 +166,6 @@ builder.Services.AddScoped<IReplenishmentCommandService, ReplenishmentCommandSer
 builder.Services.AddScoped<IReplenishmentQueryService, ReplenishmentQueryService>();
 
 // Configure JWT settings
-builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 
 // Register IAM services
 builder.Services.AddScoped<Corebyte_platform.IAM.Domain.Repositories.IUserRepository, Corebyte_platform.IAM.Infrastructure.Persistence.EFC.Repositories.UserRepository>();
@@ -181,47 +195,9 @@ builder.Services
     .AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()))
     .AddApplicationPart(typeof(Corebyte_platform.authentication.Interfaces.REST.AuthController).Assembly);
 
-// Configure JWT Authentication
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var jwtKey = jwtSettings["Key"];
-var jwtIssuer = jwtSettings["Issuer"] ?? (builder.Environment.IsDevelopment() ? "https://localhost:5001" : null);
-var jwtAudience = jwtSettings["Audience"] ?? (builder.Environment.IsDevelopment() ? "https://localhost:5001" : null);
 
-// Validate JWT configuration based on environment
-if (string.IsNullOrWhiteSpace(jwtKey))
-{
-    if (builder.Environment.IsDevelopment())
-    {
-        // Generate a secure random key for development only
-        var keyBytes = new byte[32]; // 256 bits
-        using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
-        rng.GetBytes(keyBytes);
-        jwtKey = Convert.ToBase64String(keyBytes);
-        Console.WriteLine($"WARNING: Using auto-generated JWT key for development: {jwtKey}");
-    }
-    else
-    {
-        throw new InvalidOperationException("JWT Key is required and must be at least 32 characters long in production. Please set the 'Jwt:Key' configuration value.");
-    }
-}
-else if (jwtKey.Length < 32)
-{
-    throw new InvalidOperationException("JWT Key must be at least 32 characters long");
-}
 
-// Validate Issuer and Audience in production
-if (!builder.Environment.IsDevelopment())
-{
-    if (string.IsNullOrWhiteSpace(jwtIssuer) || string.IsNullOrWhiteSpace(jwtAudience))
-    {
-        throw new InvalidOperationException("Both JWT Issuer and Audience must be configured in production. Please set 'Jwt:Issuer' and 'Jwt:Audience' in your production configuration.");
-    }
-    
-    if (jwtIssuer.Contains("localhost") || jwtAudience.Contains("localhost"))
-    {
-        throw new InvalidOperationException("JWT Issuer and Audience cannot contain 'localhost' in production. Please use your production domain.");
-    }
-}
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -236,9 +212,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtIssuer,
-        ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+
+
         ClockSkew = TimeSpan.Zero // Remove delay of token when expire
     };
 
@@ -296,9 +271,24 @@ else
     app.UseHsts();
 }
 
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction()) // Añade IsProduction
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c => 
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Corebyte API V1");
+        c.RoutePrefix = "swagger"; // Asegura que la ruta sea /swagger
+    });
+}
+
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("VueCorsPolicy");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapGet("/", () => "API is running!");
+});
+app.UseCors("AllowLocalhost");
 app.UseAuthentication();
 app.UseAuthorization();
 
