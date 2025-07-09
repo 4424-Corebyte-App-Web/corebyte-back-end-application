@@ -69,15 +69,21 @@ else
     );
 }
 
+// Configure CORS for both development and production
+var allowedOrigins = builder.Environment.IsDevelopment()
+    ? new[] { "http://localhost:5173", "https://tracewine-app.web.app" }
+    : new[] { "https://tracewine-app.web.app" };
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("VueCorsPolicy", policy =>
     {
         policy
-          .WithOrigins("http://localhost:5173")  // Origen exacto
-          .AllowAnyMethod()
-          .AllowAnyHeader()
-          .AllowCredentials();                  // <-- Aquí permites credenciales
+            .WithOrigins(allowedOrigins)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .WithExposedHeaders("Content-Disposition");
     });
 });
 
@@ -286,17 +292,19 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction()) // Añade
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+// CORS must be after UseRouting and before UseAuthentication/UseAuthorization
+app.UseCors("VueCorsPolicy");
+
+// Authentication & Authorization
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
     endpoints.MapGet("/", () => "API is running!");
 });
-app.UseCors("VueCorsPolicy");
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllers();
 app.Run();
-
-
-
