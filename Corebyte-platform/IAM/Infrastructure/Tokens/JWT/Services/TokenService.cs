@@ -32,33 +32,68 @@ public class TokenService(IOptions<TokenSettings> tokenSettings) : ITokenService
      */
     public string GenerateToken(User user)
     {
-        if (string.IsNullOrWhiteSpace(_tokenSettings.Secret))
+        try
         {
-            throw new InvalidOperationException("JWT Secret is not configured");
-        }
-
-        if (user == null)
-        {
-            throw new ArgumentNullException(nameof(user));
-        }
-
-        var key = Encoding.ASCII.GetBytes(_tokenSettings.Secret);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
+            Console.WriteLine($"[TokenService] Starting token generation for user ID: {user?.Id}, Username: {user?.Username}");
+            
+            if (string.IsNullOrWhiteSpace(_tokenSettings?.Secret))
             {
-            new Claim(ClaimTypes.Sid, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
-        }),
-            Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature)
-        };
+                var errorMsg = "JWT Secret is not configured";
+                Console.WriteLine($"[TokenService] Error: {errorMsg}");
+                throw new InvalidOperationException(errorMsg);
+            }
 
-        var tokenHandler = new JsonWebTokenHandler();
-        return tokenHandler.CreateToken(tokenDescriptor);
+            if (user == null)
+            {
+                var errorMsg = "User cannot be null";
+                Console.WriteLine($"[TokenService] Error: {errorMsg}");
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            if (user.Id <= 0)
+            {
+                var errorMsg = $"Invalid user ID: {user.Id}";
+                Console.WriteLine($"[TokenService] Error: {errorMsg}");
+                throw new ArgumentException(errorMsg, nameof(user.Id));
+            }
+
+            Console.WriteLine($"[TokenService] Creating token descriptor for user ID: {user.Id}");
+            var key = Encoding.ASCII.GetBytes(_tokenSettings.Secret);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Sid, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username ?? string.Empty)
+            };
+
+            Console.WriteLine($"[TokenService] Claims created: {string.Join(", ", claims.Select(c => $"{c.Type}: {c.Value}"))}");
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            Console.WriteLine("[TokenService] Creating token...");
+            var tokenHandler = new JsonWebTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            
+            Console.WriteLine("[TokenService] Token generated successfully");
+            return token;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[TokenService] Error generating token: {ex}");
+            Console.WriteLine($"[TokenService] Stack trace: {ex.StackTrace}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"[TokenService] Inner exception: {ex.InnerException}");
+            }
+            throw new Exception("Failed to generate authentication token. See logs for details.", ex);
+        }
     }
 
     /**
